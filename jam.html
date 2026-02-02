@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Jam Jar | Gelatine Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --primary: #ff4d4d;
+            /* Red for Jam */
+            --neon: #ff0055;
+            --text: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(255, 0, 85, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 77, 77, 0.1) 0%, transparent 40%);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        /* Jam Jar Animation */
+        .jar-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .jar {
+            font-size: 5em;
+            display: inline-block;
+            animation: pulse 3s infinite ease-in-out;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.4));
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05) rotate(5deg);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0;
+            font-size: 2.2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Stats Grid */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            opacity: 0.7;
+            text-transform: uppercase;
+        }
+
+        .stat-val {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: var(--primary);
+        }
+
+        /* Inputs */
+        .input-group {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px;
+            color: white;
+            font-size: 1.5em;
+            font-family: 'Space Grotesk', sans-serif;
+            outline: none;
+            text-align: center;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        /* Buttons */
+        button {
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            border: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            text-transform: uppercase;
+            transition: 0.2s;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .btn-buy {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+        }
+
+        .btn-buy:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.6);
+        }
+
+        .btn-buy:disabled {
+            background: #333;
+            color: #666;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #status {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+            font-size: 0.9em;
+            min-height: 20px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="jar-container">
+            <div class="jar">🍓</div>
+            <h1>The Jam Jar</h1>
+            <div style="font-size: 0.8em; opacity: 0.6; margin-top: 5px;">EXCLUSIVE JAM TOKEN SALE</div>
+        </div>
+
+        <div class="nav">
+            <a href="index.html">Command Center</a>
+            <a href="swap.html">Swap</a>
+            <a href="jam.html" class="active">Jam Jar</a>
+            <a href="mint.html">🍮 Jelly Heads</a>
+        </div>
+
+        <div class="card">
+            <div class="stat-row">
+                <div>
+                    <div class="stat-label">Your JAM Balance</div>
+                    <div class="stat-val" id="jamBal">0.0</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stat-label">Price per JAM</div>
+                    <div class="stat-val" id="priceDisplay">Loading...</div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 10px; opacity: 0.7; font-size: 0.9em;">
+                Enter amount to buy:
+            </div>
+
+            <div class="input-group">
+                <input type="number" id="amount" placeholder="0" min="1" oninput="calcTotal()">
+            </div>
+
+            <div style="text-align: center; margin-top: 15px; font-size: 0.9em; color: var(--primary);">
+                Total Cost: <span id="totalCost">0.0</span> JELLO
+            </div>
+
+            <button id="mainBtn" class="btn-buy" onclick="connect()">Connect Wallet</button>
+            <div id="status"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- ⚙️ CONFIGURATION ---
+        const JAM_ADDR = "0xcA2144D681137eD0F7A4CCb941fe2d834D1A78bb";
+
+        // ABI
+        const JAM_ABI = [
+            "function claim(address _receiver, uint256 _quantity, address _currency, uint256 _pricePerToken, (bytes32[] proof, uint256 quantityLimitPerWallet, uint256 pricePerToken, address currency) _allowlistProof, bytes _data) payable",
+            "function getActiveClaimConditionId() view returns (uint256)",
+            "function getClaimConditionById(uint256 _conditionId) view returns (tuple(uint256 startTimestamp, uint256 maxClaimableSupply, uint256 supplyClaimed, uint256 quantityLimitPerWallet, bytes32 merkleRoot, uint256 pricePerToken, address currency, string metadata))",
+            "function balanceOf(address) view returns (uint256)",
+            "function decimals() view returns (uint8)"
+        ];
+
+        let provider, signer, jamContract;
+        let pricePerToken = 0n;
+        let decimals = 18;
+        const CHAIN_ID = "0xF07C"; // 61564
+
+        async function connect() {
+            if (!window.ethereum) return alert("Install MetaMask");
+            provider = new ethers.BrowserProvider(window.ethereum);
+            try {
+                await provider.send("eth_requestAccounts", []);
+
+                // Check Network
+                const net = await provider.getNetwork();
+                if (net.chainId !== 61564n) {
+                    try {
+                        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: CHAIN_ID }] });
+                    } catch (e) { alert("Switch to Gelatine Network!"); return; }
+                }
+
+                signer = await provider.getSigner();
+
+                const btn = document.getElementById('mainBtn');
+                btn.innerText = "BUY JAM";
+                btn.onclick = buyJam;
+
+                initContract();
+            } catch (e) {
+                console.error(e);
+                alert("Connection Error");
+            }
+        }
+
+        async function initContract() {
+            jamContract = new ethers.Contract(JAM_ADDR, JAM_ABI, signer);
+            const user = await signer.getAddress();
+
+            try {
+                const bal = await jamContract.balanceOf(user);
+                try { decimals = await jamContract.decimals(); } catch (e) { decimals = 18; }
+                document.getElementById('jamBal').innerText = ethers.formatUnits(bal, decimals);
+
+                const conditionId = await jamContract.getActiveClaimConditionId();
+                const condition = await jamContract.getClaimConditionById(conditionId);
+                pricePerToken = condition.pricePerToken;
+                document.getElementById('priceDisplay').innerText = ethers.formatEther(pricePerToken) + " JELLO";
+            } catch (e) {
+                console.error("Error fetching price/balance:", e);
+                document.getElementById('priceDisplay').innerText = "Dashboard Config Error";
+            }
+        }
+
+        function calcTotal() {
+            const amt = document.getElementById('amount').value;
+            if (!amt) {
+                document.getElementById('totalCost').innerText = "0.0";
+                return;
+            }
+            try {
+                const quantityWei = ethers.parseUnits(amt, decimals);
+                const totalCost = (quantityWei * pricePerToken) / (10n ** BigInt(decimals));
+                document.getElementById('totalCost').innerText = ethers.formatEther(totalCost);
+            } catch (e) { }
+        }
+
+        async function buyJam() {
+            const amt = document.getElementById('amount').value;
+            if (!amt || amt <= 0) return alert("Enter amount");
+
+            const btn = document.getElementById('mainBtn');
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+            document.getElementById('status').innerText = "Initiating Claim...";
+
+            try {
+                const userAddr = await signer.getAddress();
+                const quantityWei = ethers.parseUnits(amt, decimals);
+                const totalCost = (quantityWei * pricePerToken) / (10n ** BigInt(decimals));
+
+                // FIX: Use LOWERCASE address to bypass Ethers v6 Checksum/ENS validation error
+                const NATIVE_TOKEN = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
+
+                // Just use userAddr string directly (signer usually handles this fine)
+                // or use ethers.getAddress if you want, but simpler is safer here.
+
+                const zeroAddr = ethers.ZeroAddress;
+
+                // Proof Structure
+                const proof = [
+                    [],           // proof (bytes32[])
+                    0,            // quantityLimitPerWallet
+                    0,            // pricePerToken (0 means default)
+                    zeroAddr      // currency (0x0 means default)
+                ];
+
+                const tx = await jamContract.claim(
+                    userAddr,         // _receiver
+                    quantityWei,      // _quantity
+                    NATIVE_TOKEN,     // _currency (using lowercase string)
+                    pricePerToken,    // _pricePerToken
+                    proof,            // _allowlistProof (Struct)
+                    "0x",             // _data
+                    { value: totalCost }
+                );
+
+                await tx.wait();
+
+                alert("Success! You got the JAM!");
+                btn.innerText = "BUY JAM";
+                btn.disabled = false;
+                document.getElementById('status').innerText = "Transaction Confirmed";
+                initContract();
+                document.getElementById('amount').value = "";
+                document.getElementById('totalCost').innerText = "0.0";
+
+            } catch (e) {
+                console.error(e);
+                const errMsg = e.reason || e.code || "Unknown Error";
+                alert("Claim Failed: " + errMsg);
+                document.getElementById('status').innerText = "Error: " + errMsg;
+                btn.innerText = "BUY JAM";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>
