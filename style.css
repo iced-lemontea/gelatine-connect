@@ -54,16 +54,18 @@ body {
 
 /* --- Typography --- */
 h1 {
-    font-size: 5em;
+    font-size: 4em;
+    /* Reduced from 5em to fit better on subpages */
     margin: 0;
-    background: linear-gradient(90deg, #ffffff 0%, #ffffff 50%, var(--pulse-pink) 100%);
+    background: linear-gradient(90deg, #ffffff 0%, #ffffff 60%, var(--pulse-pink) 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-transform: uppercase;
-    letter-spacing: -2px;
+    letter-spacing: -1px;
     font-weight: 800;
     filter: drop-shadow(0 0 15px rgba(250, 0, 255, 0.3));
+    white-space: nowrap;
 }
 
 .subhead {
