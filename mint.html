@@ -7,64 +7,11 @@
     <title>Jelly Heads | Gelatine Network</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        /* --- EXACT STYLES FROM REFERENCE --- */
-        :root {
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --primary: #FF007F;
-            /* Neon Pink */
-            --accent: #00F3FF;
-            /* Neon Blue */
-            --text: #ffffff;
-        }
-
-        body {
-            background-color: var(--bg);
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(255, 0, 127, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.15) 0%, transparent 40%);
-            color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
+        /* Mint Page Specifics */
         .container {
-            width: 100%;
             max-width: 480px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Nav */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .nav a {
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-            padding-bottom: 5px;
-            text-transform: uppercase;
-            font-size: 0.9em;
-        }
-
-        .nav a.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
         }
 
         /* Header */
@@ -74,24 +21,8 @@
         }
 
         h1 {
-            font-size: 2em;
             margin: 0;
-            background: linear-gradient(90deg, var(--primary), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Glass Card */
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            text-align: center;
+            font-size: 2em;
         }
 
         /* NFT Image Area */
@@ -148,28 +79,13 @@
         .stat-val {
             font-size: 1.2em;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--neon-cyan);
+            /* mapped from accent */
         }
 
-        .stat-label {
-            font-size: 0.7em;
-            opacity: 0.6;
-            text-transform: uppercase;
-        }
-
-        /* Main Mint Button */
+        /* Main Mint Button - Keep specific gradient */
         button.main-btn {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            border: none;
-            font-weight: 700;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Space Grotesk', sans-serif;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, var(--primary), #ff55aa);
+            background: linear-gradient(45deg, var(--neon-magenta), #ff55aa);
             color: white;
             box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
         }
@@ -183,8 +99,7 @@
             background: #333;
             box-shadow: none;
             cursor: not-allowed;
-            transform: none;
-            opacity: 0.7;
+            opacity: 0.5;
         }
 
         /* Status & Links */
@@ -195,7 +110,240 @@
             font-weight: bold;
         }
 
-        /* Wallet Settings Section (Styled like secondary actions) */
+        /* === FLOATING NFT BACKGROUNDS === */
+        .floating-nfts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .float-nft {
+            position: absolute;
+            opacity: 0.3;
+            filter: blur(1px);
+            pointer-events: auto;
+            cursor: pointer;
+            transition: opacity 0.3s ease, filter 0.3s ease;
+        }
+
+        .float-nft:hover {
+            opacity: 0.35;
+            filter: blur(0px);
+        }
+
+        .float-nft img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Individual NFT positions */
+        .nft-1 {
+            top: 8%;
+            left: 3%;
+            width: 140px;
+            height: 140px;
+            animation: floatDrift1 20s ease-in-out infinite;
+        }
+
+        .nft-1 img {
+            animation: wobbleFloat1 6s ease-in-out infinite;
+        }
+
+        .nft-2 {
+            top: 55%;
+            right: 5%;
+            width: 120px;
+            height: 120px;
+            animation: floatDrift2 25s ease-in-out infinite;
+        }
+
+        .nft-2 img {
+            animation: wobbleFloat2 7s ease-in-out infinite;
+        }
+
+        .nft-3 {
+            bottom: 12%;
+            left: 8%;
+            width: 130px;
+            height: 130px;
+            animation: floatDrift3 22s ease-in-out infinite;
+        }
+
+        .nft-3 img {
+            animation: wobbleFloat3 5.5s ease-in-out infinite;
+        }
+
+        .nft-4 {
+            top: 28%;
+            right: 12%;
+            width: 110px;
+            height: 110px;
+            animation: floatDrift4 18s ease-in-out infinite;
+        }
+
+        .nft-4 img {
+            animation: wobbleFloat4 6.5s ease-in-out infinite;
+        }
+
+        /* Wobble animations */
+        @keyframes wobbleFloat1 {
+
+            0%,
+            100% {
+                transform: rotate(-4deg) translateY(0px);
+            }
+
+            25% {
+                transform: rotate(3deg) translateY(-15px);
+            }
+
+            50% {
+                transform: rotate(-3deg) translateY(-8px);
+            }
+
+            75% {
+                transform: rotate(4deg) translateY(-18px);
+            }
+        }
+
+        @keyframes wobbleFloat2 {
+
+            0%,
+            100% {
+                transform: rotate(3deg) translateY(0px);
+            }
+
+            25% {
+                transform: rotate(-4deg) translateY(-12px);
+            }
+
+            50% {
+                transform: rotate(2deg) translateY(-20px);
+            }
+
+            75% {
+                transform: rotate(-3deg) translateY(-10px);
+            }
+        }
+
+        @keyframes wobbleFloat3 {
+
+            0%,
+            100% {
+                transform: rotate(-3deg) translateY(0px);
+            }
+
+            25% {
+                transform: rotate(4deg) translateY(-10px);
+            }
+
+            50% {
+                transform: rotate(-2deg) translateY(-16px);
+            }
+
+            75% {
+                transform: rotate(3deg) translateY(-8px);
+            }
+        }
+
+        @keyframes wobbleFloat4 {
+
+            0%,
+            100% {
+                transform: rotate(2deg) translateY(0px);
+            }
+
+            25% {
+                transform: rotate(-3deg) translateY(-14px);
+            }
+
+            50% {
+                transform: rotate(4deg) translateY(-7px);
+            }
+
+            75% {
+                transform: rotate(-2deg) translateY(-19px);
+            }
+        }
+
+        /* Drift animations */
+        @keyframes floatDrift1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(40px, -50px);
+            }
+
+            66% {
+                transform: translate(-30px, -25px);
+            }
+        }
+
+        @keyframes floatDrift2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(-45px, 35px);
+            }
+
+            66% {
+                transform: translate(25px, -40px);
+            }
+        }
+
+        @keyframes floatDrift3 {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(35px, 40px);
+            }
+
+            66% {
+                transform: translate(-35px, 25px);
+            }
+        }
+
+        @keyframes floatDrift4 {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            33% {
+                transform: translate(-28px, -30px);
+            }
+
+            66% {
+                transform: translate(42px, 30px);
+            }
+        }
+
+        /* Ensure main content is above */
+        body>.container {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Wallet Settings Section */
         .wallet-tools {
             margin-top: 30px;
             padding-top: 20px;
@@ -215,18 +363,16 @@
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
             font-size: 0.9em;
             padding: 12px;
             border-radius: 12px;
             cursor: pointer;
-            transition: 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-family: 'Space Grotesk', sans-serif;
         }
 
         .btn-secondary:hover {
@@ -237,6 +383,14 @@
         .input-group {
             display: flex;
             gap: 5px;
+            margin-bottom: 0;
+            /* override style.css */
+            padding: 0;
+            /* override style.css */
+            background: transparent;
+            /* override style.css */
+            border: none;
+            /* override style.css */
         }
 
         .id-input {
@@ -254,6 +408,22 @@
 
 <body>
 
+    <!-- Floating NFT Backgrounds -->
+    <div class="floating-nfts">
+        <div class="float-nft nft-1">
+            <img src="images/1.png" alt="Jello Head">
+        </div>
+        <div class="float-nft nft-2">
+            <img src="images/36.png" alt="Jello Head">
+        </div>
+        <div class="float-nft nft-3">
+            <img src="images/59.png" alt="Jello Head">
+        </div>
+        <div class="float-nft nft-4">
+            <img src="images/75.png" alt="Jello Head">
+        </div>
+    </div>
+
     <div class="container">
         <div class="logo-container">
             <div style="font-size: 3em; margin-bottom: 10px;">🍮</div>
@@ -264,8 +434,79 @@
         <div class="nav">
             <a href="index.html">Command Center</a>
             <a href="swap.html">Swap</a>
-            <a href="jam.html">Jam Jar</a>
-            <a href="mint.html" class="active">Jelly Heads</a>
+            <a href="jam.html">Buy JAM Token</a>
+            <a href="mint.html" class="active">Mint Jelly Heads NFT</a>
+        </div>
+
+        <!-- NFT INTRODUCTION SECTION -->
+        <div class="card" style="margin-bottom: 30px; cursor: pointer;" onclick="toggleIntro()">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2
+                    style="margin: 0; font-size: 1.5em; background: linear-gradient(90deg, var(--pulse-pink), var(--pulse-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    🫨 The Origin of the Wobble</h2>
+                <span id="introToggle" style="font-size: 1.5em;">▼</span>
+            </div>
+            <div id="introContent" style="margin-top: 20px;">
+                <p style="font-size: 0.95em; line-height: 1.6; opacity: 0.9;">
+                    It started on a Tuesday afternoon in the Gelatine Network's central "Pantry." A high-frequency
+                    trader tried to swap 10 million JELLO tokens for a single Pudding cup. The smart contract couldn't
+                    handle the sweetness—it overheated, short-circuited the refrigerator, and accidentally merged the
+                    blockchain's core code with a batch of artisanal fruit juice.
+                </p>
+                <p style="font-size: 0.95em; line-height: 1.6; opacity: 0.9;">
+                    When the smoke cleared, the kitchen wasn't a mess. Instead, <strong class="neon-pink">96 little
+                        translucent faces</strong> were staring back from the counter. They weren't just dessert
+                    anymore. <strong>They were sentient.</strong>
+                </p>
+
+                <div
+                    style="background: rgba(250, 0, 255, 0.05); border-left: 3px solid var(--pulse-pink); padding: 15px; margin: 20px 0; border-radius: 8px;">
+                    <h3 style="margin: 0 0 10px 0; font-size: 1.1em; color: var(--pulse-cyan);">Born to Jiggle</h3>
+                    <p style="margin: 0; font-size: 0.9em; opacity: 0.9;">
+                        These are the Jello Heads. They don't have bones, they don't have worries, and they definitely
+                        don't have a concept of "financial stability." Some are Happy because they're on a decentralized
+                        ledger. Others are Anxious because they've seen a spoon. And the Angry ones? Someone probably
+                        told them they look like flan.
+                    </p>
+                </div>
+
+                <h3 style="font-size: 1.2em; margin: 20px 0 15px 0;">🎯 Why You Need a Jello Head</h3>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div
+                        style="background: rgba(0, 243, 255, 0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2);">
+                        <div style="font-size: 1.5em; margin-bottom: 8px;">⚛️</div>
+                        <div style="font-weight: bold; margin-bottom: 5px; color: var(--pulse-cyan);">Anti-Gravity Tech
+                        </div>
+                        <div style="font-size: 0.85em; opacity: 0.8;">They never lose their shape. Even in a market
+                            crash, they just bounce back.</div>
+                    </div>
+                    <div
+                        style="background: rgba(250, 0, 255, 0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(250, 0, 255, 0.2);">
+                        <div style="font-size: 1.5em; margin-bottom: 8px;">🔗</div>
+                        <div style="font-weight: bold; margin-bottom: 5px; color: var(--pulse-pink);">The Stickiness
+                            Factor</div>
+                        <div style="font-size: 0.85em; opacity: 0.8;">The "stickiest" assets on Gelatine chain. Once you
+                            buy one, it's hard to let go.</div>
+                    </div>
+                    <div
+                        style="background: rgba(0, 255, 157, 0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(0, 255, 157, 0.2);">
+                        <div style="font-size: 1.5em; margin-bottom: 8px;">🏆</div>
+                        <div style="font-weight: bold; margin-bottom: 5px; color: var(--pulse-green);">Social Proof
+                        </div>
+                        <div style="font-size: 0.85em; opacity: 0.8;">Nothing says "I was here at the start" like a
+                            Jello Head PFP.</div>
+                    </div>
+                </div>
+
+                <div
+                    style="text-align: center; padding: 20px; background: linear-gradient(135deg, rgba(250, 0, 255, 0.1) 0%, rgba(0, 243, 255, 0.1) 100%); border-radius: 16px; margin-top: 20px;">
+                    <p style="font-size: 1.1em; font-weight: bold; margin: 0; font-style: italic;">
+                        "They're sweet. They're sentient. And they're looking for a wallet to call home. Don't let them
+                        melt—mint yours today!"
+                    </p>
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -325,20 +566,37 @@
 
         // --- ABIS ---
         const NFT_ABI = [
-            "function mint() public",
             "function nextTokenId() view returns (uint256)",
-            "function totalSupply() view returns (uint256)"
+            "function ownerOf(uint256 tokenId) view returns (address)", // Check if token is minted
+            "function totalSupply() view returns (uint256)",
+            "function mint() payable"
         ];
-
-        const ERC20_ABI = [
-            "function approve(address spender, uint256 amount) public returns (bool)",
+        const JAM_ABI = [
+            "function balanceOf(address) view returns (uint256)",
             "function allowance(address owner, address spender) view returns (uint256)",
-            "function balanceOf(address account) view returns (uint256)"
+            "function approve(address spender, uint256 amount) returns (bool)"
         ];
 
-        let provider, signer, nftContract, jamContract;
-        let currentNextId = 1;
-        let userAddress;
+        // --- STATE ---
+        let provider, signer, userAddress;
+        let nftContract, jamContract;
+        let currentNextId;
+        let currentRandomId; // The random ID we're showing for minting
+        let lastMintedId; // Track the ID that was just minted
+        let availableIds = []; // Array of unminted token IDs
+
+        // Toggle introduction section
+        function toggleIntro() {
+            const content = document.getElementById('introContent');
+            const toggle = document.getElementById('introToggle');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggle.innerText = '▼';
+            } else {
+                content.style.display = 'none';
+                toggle.innerText = '▶';
+            }
+        }
 
         // --- INIT & LOGIC ---
 
@@ -349,43 +607,80 @@
 
         async function connectWallet() {
             if (!window.ethereum) {
-                setStatus("Please install MetaMask!", "red");
+                alert("Please install MetaMask!");
                 return;
             }
 
             try {
                 provider = new ethers.BrowserProvider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
 
-                // Switch Chain
+                // Check Network
                 const network = await provider.getNetwork();
-                if (network.chainId !== 61564n) {
-                    try {
-                        await window.ethereum.request({
-                            method: "wallet_switchEthereumChain",
-                            params: [{ chainId: CHAIN_ID }]
-                        });
-                    } catch (e) {
-                        setStatus("⚠️ Please switch to Gelatine Network", "red");
-                        return;
-                    }
+                if (network.chainId !== parseInt(CHAIN_ID, 16)) {
+                    alert(`Please switch to Gelatine Network (Chain ID: ${CHAIN_ID})`);
+                    return;
                 }
 
                 signer = await provider.getSigner();
                 userAddress = await signer.getAddress();
 
-                // Initialize Contracts
+                // Init Contracts
                 nftContract = new ethers.Contract(NFT_ADDRESS, NFT_ABI, signer);
-                jamContract = new ethers.Contract(JAM_ADDRESS, ERC20_ABI, signer);
+                jamContract = new ethers.Contract(JAM_ADDRESS, JAM_ABI, signer);
 
-                setStatus("Connected: " + userAddress.slice(0, 6) + "...", "#00F3FF");
+                document.getElementById("actionBtn").innerText = "Loading...";
+                document.getElementById("actionBtn").disabled = true;
 
-                // Load Data
+                await loadAvailableNFTs();
                 await refreshData();
 
-            } catch (err) {
-                console.error(err);
-                setStatus("Connection Error", "red");
+            } catch (error) {
+                console.error(error);
+                setStatus("Connection failed: " + error.message, "red");
             }
+        }
+
+        // Load all available (unminted) NFT IDs
+        async function loadAvailableNFTs() {
+            availableIds = [];
+            setStatus("🔍 Scanning for available Jello Heads...", "white");
+
+            // Check IDs 1-96 for availability
+            for (let id = 1; id <= 96; id++) {
+                try {
+                    // If ownerOf reverts, the token is not minted yet
+                    await nftContract.ownerOf(id);
+                    // Token exists (has owner), skip it
+                } catch (e) {
+                    // Token doesn't exist yet, it's available
+                    availableIds.push(id);
+                }
+            }
+
+            if (availableIds.length === 0) {
+                setStatus("❌ All Jello Heads have been minted!", "#ff4d4d");
+                document.getElementById("actionBtn").innerText = "SOLD OUT";
+                document.getElementById("actionBtn").disabled = true;
+                return;
+            }
+
+            // Select a random one from available
+            selectRandomNFT();
+            setStatus(`✅ Found ${availableIds.length} available Jello Heads`, "#4caf50");
+        }
+
+        // Select and display a random NFT from available IDs
+        function selectRandomNFT() {
+            if (availableIds.length === 0) return;
+
+            const randomIndex = Math.floor(Math.random() * availableIds.length);
+            currentRandomId = availableIds[randomIndex];
+
+            // Update display
+            document.getElementById("nextIdDisplay").innerText = currentRandomId;
+            document.getElementById("manualTokenId").value = currentRandomId;
+            document.getElementById("nftPreview").src = IMG_BASE_URI + currentRandomId + ".png";
         }
 
         async function refreshData() {
@@ -460,17 +755,35 @@
         async function mintNft() {
             const btn = document.getElementById("actionBtn");
             try {
-                setStatus("⏳ Minting Jelly Head...", "var(--primary)");
+                setStatus("⏳ Minting Jello Head #" + currentRandomId + "...", "white");
                 btn.disabled = true;
                 btn.innerText = "MINTING...";
 
                 const tx = await nftContract.mint();
                 await tx.wait();
 
-                setStatus("🎉 MINT SUCCESSFUL!", "#00F3FF");
+                // Store the minted ID
+                lastMintedId = currentRandomId;
 
-                // Update UI for next item
-                await refreshData();
+                setStatus("🎉 MINT SUCCESSFUL! Jelly Head #" + lastMintedId + " is yours!", "#00F3FF");
+
+                // Automatically prompt to add to MetaMask
+                setTimeout(() => {
+                    addNftToWallet(lastMintedId);
+                }, 1000);
+
+                // Remove minted ID from available list
+                availableIds = availableIds.filter(id => id !== lastMintedId);
+
+                // Select another random NFT for next mint
+                if (availableIds.length > 0) {
+                    selectRandomNFT();
+                    await refreshData();
+                } else {
+                    setStatus("❌ All Jello Heads have been minted!", "#ff4d4d");
+                    btn.innerText = "SOLD OUT";
+                    btn.disabled = true;
+                }
 
             } catch (err) {
                 console.error(err);
@@ -506,13 +819,14 @@
             }
         }
 
-        async function addNftToWallet() {
-            // Get ID from input or default to current
-            const idInput = document.getElementById("manualTokenId").value;
-            // Fallback to currentNextId if empty (though logically user usually adds what they just bought)
-            const idToTrack = idInput ? idInput : currentNextId;
+        async function addNftToWallet(tokenId) {
+            // Use provided ID, or lastMintedId, or manual input as fallback
+            const idToTrack = tokenId || lastMintedId || document.getElementById("manualTokenId").value;
 
-            if (!idToTrack) return;
+            if (!idToTrack) {
+                alert("Please enter a token ID or mint an NFT first");
+                return;
+            }
 
             try {
                 await window.ethereum.request({
@@ -521,20 +835,44 @@
                         type: 'ERC721',
                         options: {
                             address: NFT_ADDRESS,
-                            tokenId: idToTrack.toString(),
-                            symbol: "JELLY",
-                            image: IMG_BASE_URI + idToTrack + ".png"
+                            tokenId: String(idToTrack),
                         },
                     },
                 });
             } catch (error) {
                 console.error(error);
-                alert("Could not add to MetaMask. You may need to verify you own this Token ID.");
             }
         }
 
         window.onload = init;
     </script>
+
+    <!-- Legal Modal -->
+    <div id="legalModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div
+            style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; max-width: 700px; max-height: 80vh; overflow-y: auto; padding: 40px; position: relative;">
+            <button onclick="closeLegalModal()"
+                style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2em; cursor: pointer; padding: 0; width: auto;">×</button>
+            <h2 id="legalModalTitle" style="margin-top: 0; color: var(--pulse-cyan);"></h2>
+            <div id="legalModalContent" style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);"></div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; font-size: 0.8em; opacity: 0.4; padding: 40px 0; margin-top: 40px;">
+        <div style="margin-bottom: 10px;">
+            <a href="#" onclick="showDisclaimer(); return false;"
+                style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Disclaimer</a>
+            |
+            <a href="#" onclick="showPrivacy(); return false;"
+                style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Privacy
+                Policy</a>
+        </div>
+        <div>Developed by <a href="https://www.pine.ink" target="_blank"
+                style="color: white; text-decoration: none; border-bottom: 1px dotted white;">Pine Ink Group</a></div>
+    </footer>
+
+    <script src="legal-modals.js"></script>
 </body>
 
 </html>

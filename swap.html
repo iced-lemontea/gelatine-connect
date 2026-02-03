@@ -7,99 +7,17 @@
     <title>WiggleSwap | Gelatine Network</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <style>
-        :root {
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --primary: #f2a900;
-            --text: #ffffff;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
+        /* Swap Specific Styles */
         .container {
-            width: 100%;
             max-width: 480px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
         }
 
         .logo {
             font-size: 3em;
             display: inline-block;
             animation: wobble 3s infinite ease-in-out;
-        }
-
-        @keyframes wobble {
-
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(-5deg);
-            }
-
-            75% {
-                transform: rotate(5deg);
-            }
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 2em;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, var(--primary), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .nav a {
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-            padding-bottom: 5px;
-            text-transform: uppercase;
-            font-size: 0.9em;
-        }
-
-        .nav a.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-        }
-
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 25px;
-            min-height: 450px;
         }
 
         .tabs {
@@ -153,13 +71,9 @@
         }
 
         input {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.8em;
             width: 60%;
-            outline: none;
-            font-family: 'Space Grotesk', sans-serif;
+            /* Override style.css 100% */
+            font-size: 1.8em;
         }
 
         .token-badge {
@@ -188,25 +102,6 @@
             position: relative;
         }
 
-        button {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            border: none;
-            font-weight: bold;
-            font-size: 1.1em;
-            cursor: pointer;
-            margin-top: 20px;
-            text-transform: uppercase;
-            transition: 0.2s;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .btn-action {
-            background: var(--primary);
-            color: #000;
-        }
-
         .btn-wrap {
             background: #4caf50;
             color: white;
@@ -218,13 +113,6 @@
             color: white;
             width: 48%;
             border: 1px solid var(--border);
-        }
-
-        #status {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 0.85em;
-            color: rgba(255, 255, 255, 0.5);
         }
 
         #connect-overlay {
@@ -267,8 +155,8 @@
         <div class="nav">
             <a href="index.html">Command Center</a>
             <a href="swap.html" class="active">WiggleSwap</a>
-            <a href="jam.html">Jam Jar</a>
-            <a href="mint.html">🍮 Jelly Heads</a>
+            <a href="jam.html">Buy JAM Token</a>
+            <a href="mint.html">Mint Jelly Heads NFT</a>
         </div>
 
         <div class="card">
@@ -336,6 +224,32 @@
         </div>
     </div>
 
+    <!-- Legal Modal -->
+    <div id="legalModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div
+            style="background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; max-width: 700px; max-height: 80vh; overflow-y: auto; padding: 40px; position: relative;">
+            <button onclick="closeLegalModal()"
+                style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2em; cursor: pointer; padding: 0; width: auto;">×</button>
+            <h2 id="legalModalTitle" style="margin-top: 0; color: var(--pulse-cyan);"></h2>
+            <div id="legalModalContent" style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);"></div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; font-size: 0.8em; opacity: 0.4; padding: 40px 0; margin-top: 40px;">
+        <div style="margin-bottom: 10px;">
+            <a href="#" onclick="showDisclaimer(); return false;"
+                style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Disclaimer</a>
+            |
+            <a href="#" onclick="showPrivacy(); return false;"
+                style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Privacy
+                Policy</a>
+        </div>
+        <div>Developed by <a href="https://www.pine.ink" target="_blank"
+                style="color: white; text-decoration: none; border-bottom: 1px dotted white;">Pine Ink Group</a></div>
+    </footer>
+
+    <script src="legal-modals.js"></script>
     <script>
         const ROUTER_ADDR = "0x66B5aBFBA3219EFef5E1E7a26b2A8A88e7C01eC8";
         const PUD_ADDR = "0xdDD5e1b52670667Fd7F38f8B7F8CcBc007fB9B97";
@@ -350,7 +264,11 @@
             "function getAmountsOut(uint amountIn, address[] path) view returns (uint[] amounts)",
             "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] path, address to, uint deadline) returns (uint[] amounts)"
         ];
-        const ERC20_ABI = ["function approve(address spender, uint amount) returns (bool)", "function balanceOf(address) view returns (uint)"];
+        const ERC20_ABI = [
+            "function approve(address spender, uint amount) returns (bool)",
+            "function balanceOf(address) view returns (uint)",
+            "function allowance(address owner, address spender) view returns (uint)"
+        ];
         const WJELLO_ABI = ["function deposit() payable", "function withdraw(uint amount)"];
 
         async function connectWallet() {
@@ -415,23 +333,42 @@
 
         async function getQuote() {
             const amt = document.getElementById('amountIn').value;
-            if (!amt || parseFloat(amt) <= 0) { document.getElementById('amountOut').value = ""; return; }
+            if (!amt || parseFloat(amt) <= 0) {
+                document.getElementById('amountOut').value = "";
+                setStatus("Enter amount to see quote", "#888");
+                return;
+            }
             if (!signer) return;
 
             const router = new ethers.Contract(ROUTER_ADDR, ROUTER_ABI, signer);
             const path = isWjelloToPud ? [WJELLO_ADDR, PUD_ADDR] : [PUD_ADDR, WJELLO_ADDR];
 
             try {
-                setStatus("Fetching price...", "#f2a900");
+                setStatus("📊 Fetching quote...", "#f2a900");
                 const weiIn = ethers.parseEther(amt);
                 const amounts = await router.getAmountsOut(weiIn, path);
-                document.getElementById('amountOut').value = parseFloat(ethers.formatEther(amounts[1])).toFixed(4);
-                setStatus("Quote valid", "#4caf50");
+                const outAmount = parseFloat(ethers.formatEther(amounts[1])).toFixed(6);
+                document.getElementById('amountOut').value = outAmount;
+
+                // Show warning if output is suspiciously low (potential liquidity issue)
+                const ratio = parseFloat(outAmount) / parseFloat(amt);
+                if (ratio < 0.01) {
+                    setStatus("⚠️ Low liquidity - verify amounts", "#ff9800");
+                } else {
+                    setStatus("✓ Quote ready", "#4caf50");
+                }
             } catch (e) {
-                // If Quote fails, we likely have low liquidity, but we don't block the UI.
-                console.warn("Quote failed", e);
-                document.getElementById('amountOut').value = "??";
-                setStatus("⚠️ Pool low/unbalanced (Swap might still work)", "#ff4d4d");
+                console.error("Quote error:", e);
+                document.getElementById('amountOut').value = "—";
+
+                // Better error messages based on error type
+                if (e.message && e.message.includes("INSUFFICIENT_LIQUIDITY")) {
+                    setStatus("⚠️ Insufficient pool liquidity", "#ff4d4d");
+                } else if (e.message && e.message.includes("revert")) {
+                    setStatus("⚠️ Swap path unavailable", "#ff4d4d");
+                } else {
+                    setStatus("⚠️ Unable to fetch quote (swap may still work)", "#ff9800");
+                }
             }
         }
 

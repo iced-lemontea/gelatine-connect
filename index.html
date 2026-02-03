@@ -6,372 +6,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gelatine Network | Command Center</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #050505;
-            --glass: rgba(255, 255, 255, 0.05);
-            --border: rgba(255, 255, 255, 0.1);
-            --primary: #FFD700;
-            /* Gold */
-            --neon-pink: #FF007F;
-            --neon-blue: #00F3FF;
-            --text: #ffffff;
-        }
-
-        body {
-            background-color: var(--bg);
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(255, 0, 127, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.15) 0%, transparent 40%);
-            color: var(--text);
-            font-family: 'Space Grotesk', sans-serif;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Animations */
-        @keyframes wobble {
-
-            0%,
-            100% {
-                transform: scale3d(1, 1, 1);
-            }
-
-            50% {
-                transform: scale3d(1.1, 0.9, 1);
-            }
-        }
-
-        .logo {
-            font-size: 4em;
-            display: inline-block;
-            animation: wobble 3s infinite ease-in-out;
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        h1 {
-            font-size: 2em;
-            margin: 0;
-            background: linear-gradient(90deg, var(--primary), #fff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Glass Cards */
-        .card {
-            background: var(--glass);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        .section-title {
-            font-size: 0.9em;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--neon-blue);
-            letter-spacing: 1.5px;
-        }
-
-        /* Buttons */
-        button {
-            width: 100%;
-            padding: 16px;
-            border-radius: 16px;
-            border: none;
-            font-weight: 700;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Space Grotesk', sans-serif;
-            text-transform: uppercase;
-        }
-
-        button:active {
-            transform: scale(0.98);
-        }
-
-        .btn-connect {
-            background: linear-gradient(45deg, var(--primary), #ffaa00);
-            color: #000;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-            margin-bottom: 15px;
-        }
-
-        .btn-connect:hover {
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
-        }
-
-        .btn-token {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.8em;
-            padding: 10px;
-        }
-
-        .btn-token:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-action {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-            padding: 20px;
-        }
-
-        .btn-action:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--neon-pink);
-            color: var(--neon-pink);
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        /* Stats & Inputs */
-        .stat-box {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            border: 1px solid var(--border);
-        }
-
-        .stat-val {
-            font-size: 1.4em;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.7em;
-            opacity: 0.6;
-            text-transform: uppercase;
-        }
-
-        .input-group {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 5px 15px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        input {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.2em;
-            width: 100%;
-            padding: 10px 0;
-            outline: none;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .max-btn {
-            color: var(--neon-blue);
-            font-size: 0.8em;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        /* Nav */
-        .nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .nav a {
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            font-weight: bold;
-            transition: 0.3s;
-            padding-bottom: 5px;
-            text-transform: uppercase;
-            font-size: 0.9em;
-        }
-
-        .nav a.active {
-            color: var(--primary);
-            border-bottom: 2px solid var(--primary);
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-
-        #status {
-            font-size: 0.8em;
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <div class="nav">
+        <a href="index.html" class="active">Command Center</a>
+        <a href="swap.html">Swap</a>
+        <a href="jam.html">Buy JAM Token</a>
+        <a href="mint.html">Mint Jelly Heads NFT</a>
+    </div>
+
     <div class="container">
-        <div class="logo-container">
-            <span class="logo">🍮</span>
-            <h1>Gelatine Network</h1>
-            <div style="font-size: 0.8em; opacity: 0.7; letter-spacing: 3px; margin-top: 5px;">EST. 2026</div>
-        </div>
 
-        <div class="nav">
-            <a href="index.html" class="active">Command Center</a>
-            <a href="swap.html">Swap</a>
-            <a href="jam.html">Jam Jar</a>
-            <a href="mint.html">Jelly Heads</a>
-
-        </div>
-
-        <div class="card">
-            <div class="section-header">
-                <span>🔌</span> <span class="section-title">Network Setup</span>
+        <header style="text-align: center; margin-bottom: 80px;">
+            <div style="font-size: 5em; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(250,0,255,0.5));">🍮
             </div>
-            <p style="text-align: center; font-size: 0.85em; opacity: 0.7; margin-top: -10px; margin-bottom: 15px;">
-                New here? Click below to add the Chain and Tokens to your wallet.
-            </p>
-
-            <button class="btn-connect" onclick="addNetwork()">
-                ⚡ Add Gelatine Chain
-            </button>
+            <h1>Gelatine Network</h1>
+            <div class="subhead">The Sticky Layer of Web3</div>
+            <div class="tagline">Instant Finality. Zero Stress. Infinite Wiggle.</div>
 
             <div
-                style="text-align: center; font-size: 0.7em; text-transform: uppercase; opacity: 0.5; margin-bottom: 10px; letter-spacing: 1px;">
-                Discover Assets
+                style="margin-bottom: 40px; font-size: 1em; color: var(--text-dim); display: flex; justify-content: center; gap: 20px;">
+                <span
+                    style="background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">TPS:
+                    <strong class="neon-text">Instant</strong></span>
+                <span
+                    style="background: rgba(255,255,255,0.05); padding: 5px 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);">Status:
+                    <strong class="neon-green">Live</strong></span>
             </div>
 
+            <button class="btn-hero" onclick="addNetwork()">
+                ⚡ Add Network to MetaMask
+            </button>
+        </header>
+
+        <section class="grid-3" style="margin-bottom: 40px;">
+            <div class="card" style="text-align: center; padding: 30px;">
+                <div style="font-size: 2.5em; margin-bottom: 15px;">⚡</div>
+                <h3 style="margin: 0; color: var(--pulse-cyan); font-size: 1.2em;">Instant Finality</h3>
+                <p style="font-size: 0.9em; opacity: 0.7;">Transactions settle in 2 seconds flat.</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 30px;">
+                <div style="font-size: 2.5em; margin-bottom: 15px;">🏢</div>
+                <h3 style="margin: 0; color: var(--pulse-pink); font-size: 1.2em;">Enterprise Core</h3>
+                <p style="font-size: 0.9em; opacity: 0.7;">Bank-grade reliability.</p>
+            </div>
+            <div class="card" style="text-align: center; padding: 30px;">
+                <div style="font-size: 2.5em; margin-bottom: 15px;">⛽</div>
+                <h3 style="margin: 0; color: var(--pulse-green); font-size: 1.2em;">Zero-Stress Gas</h3>
+                <p style="font-size: 0.9em; opacity: 0.7;">Gas paid in JELLO. Free faucet.</p>
+            </div>
+        </section>
+
+        <div class="card">
+            <div class="section-header">
+                <span style="font-size: 1.5em;">🔧</span> <span class="section-title">Wallet Setup</span>
+            </div>
             <div class="grid-3">
-                <button class="btn-token" onclick="addToken('WJELLO')">
-                    <span>🍮</span> Add WJELLO
+                <button class="btn-metamask" onclick="addToken('WJELLO')">
+                    <span>🍮</span> Add WJELLO to MM
                 </button>
-                <button class="btn-token" onclick="addToken('PUD')">
-                    <span>🧁</span> Add PUD
+                <button class="btn-metamask" onclick="addToken('PUD')">
+                    <span>🧁</span> Add PUD to MM
                 </button>
-                <button class="btn-token" onclick="addToken('JAM')">
-                    <span>🍓</span> Add JAM
+                <button class="btn-metamask" onclick="addToken('JAM')">
+                    <span>🍓</span> Add JAM to MM
                 </button>
             </div>
         </div>
 
         <div class="card">
             <div class="section-header">
-                <span>🎁</span> <span class="section-title">Free Resources</span>
+                <span style="font-size: 1.5em;">🎁</span> <span class="section-title">Claim Free Assets</span>
             </div>
             <div class="grid-2">
                 <button class="btn-action" onclick="claimGift()">
-                    <span style="font-size: 1.5em;">🎉</span>
-                    <span>Claim 1000 JELLO</span>
-                    <span style="font-size: 0.6em; opacity: 0.7;">WELCOME BONUS</span>
+                    <span style="font-size: 2em;">🎉</span>
+                    <span style="font-weight: 700; font-size: 1.2em;">Claim 1000 JELLO</span>
+                    <span style="font-size: 0.7em; opacity: 0.6; letter-spacing: 1px;">WELCOME BONUS</span>
                 </button>
                 <button class="btn-action" onclick="claimFaucet()">
-                    <span style="font-size: 1.5em;">💧</span>
-                    <span>Claim 20 JELLO</span>
-                    <span style="font-size: 0.6em; opacity: 0.7;">DAILY FAUCET</span>
+                    <span style="font-size: 2em;">💧</span>
+                    <span style="font-weight: 700; font-size: 1.2em;">Claim 20 JELLO</span>
+                    <span style="font-size: 0.7em; opacity: 0.6; letter-spacing: 1px;">DAILY FAUCET</span>
                 </button>
             </div>
         </div>
 
+        <div class="card highlight-border">
+            <div class="section-header">
+                <span style="font-size: 1.5em;">⛽</span> <span class="section-title">Emergency Gas</span>
+            </div>
+            <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 20px;">
+                Stuck with 0 JELLO? Request a manual airdrop from the Chef.
+            </p>
+            <div class="input-group">
+                <input type="text" id="gasRequestAddr" placeholder="Paste your 0x... wallet address" />
+            </div>
+            <button class="btn-secondary-action" onclick="requestGas()">
+                📩 Request JELLO via Email
+            </button>
+        </div>
+
         <div class="card">
             <div class="section-header">
-                <span>❄️</span> <span class="section-title">The Fridge</span>
+                <span style="font-size: 1.5em;">❄️</span> <span class="section-title">The Fridge (Staking)</span>
             </div>
-            <p style="text-align: center; font-size: 0.9em; margin-top: -10px; opacity: 0.8; margin-bottom: 20px;">
-                Stake <strong>PUD</strong> to earn yield.
-            </p>
 
-            <div class="stat-grid grid-2" style="margin-bottom: 20px;">
-                <div class="stat-box">
-                    <span class="stat-val" id="liveApy">---%</span>
-                    <div class="stat-label">Live APY</div>
+            <div class="grid-2" style="margin-bottom: 25px;">
+                <div style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px;">
+                    <div class="neon-pink" style="font-size: 2.5em; font-weight: bold;" id="liveApy">---%</div>
+                    <div style="font-size: 0.8em; opacity: 0.6; text-transform: uppercase; margin-top: 5px;">Current APY
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <span class="stat-val" id="totalStaked">0</span>
-                    <div class="stat-label">Total PUD Locked</div>
+                <div style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px;">
+                    <div style="font-size: 2.5em; font-weight: bold; color: white;" id="totalStaked">0</div>
+                    <div style="font-size: 0.8em; opacity: 0.6; text-transform: uppercase; margin-top: 5px;">Total PUD
+                        Locked</div>
                 </div>
             </div>
 
             <div
-                style="background: linear-gradient(45deg, rgba(0,255,0,0.1), transparent); border: 1px solid #00ff0033; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px;">
-                <div class="stat-label" style="color: #4caf50;">Unclaimed Rewards</div>
-                <div class="stat-val" id="earned"
-                    style="color: #4caf50; font-size: 2em; text-shadow: 0 0 15px rgba(76, 175, 80, 0.4);">0.0000</div>
+                style="background: rgba(0, 255, 157, 0.05); border: 1px solid rgba(0, 255, 157, 0.2); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 30px;">
+                <div style="font-size: 0.8em; opacity: 0.8; text-transform: uppercase; margin-bottom: 5px;">Unclaimed
+                    Rewards</div>
+                <div style="font-size: 3em; color: var(--pulse-green); font-weight: 700; text-shadow: 0 0 30px rgba(0,255,157,0.3);"
+                    id="earned">0.0000</div>
                 <button onclick="getRewards()"
-                    style="background: #4caf50; color: black; margin-top: 10px; padding: 10px; width: auto; padding-left: 30px; padding-right: 30px;">Claim
-                    PUD</button>
+                    style="background: var(--pulse-green); color: black; padding: 10px 30px; font-weight: bold; border: none; margin-top: 15px; border-radius: 30px; cursor: pointer;">Claim
+                    Rewards</button>
             </div>
 
             <div
-                style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 5px; opacity: 0.7;">
+                style="display: flex; justify-content: space-between; font-size: 0.9em; margin-bottom: 10px; opacity: 0.7; padding: 0 10px;">
                 <span>Stake Amount</span>
-                <span>Bal: <span id="walletBal">0</span> PUD</span>
+                <span>Balance: <span id="walletBal">0</span> PUD</span>
             </div>
 
             <div class="input-group">
                 <input type="number" id="stakeAmount" placeholder="0.0">
-                <span class="max-btn" onclick="setMax()">MAX</span>
+                <span class="max-btn" onclick="setMax()"
+                    style="color: var(--pulse-pink); cursor: pointer; font-weight: bold;">MAX</span>
             </div>
 
             <div class="grid-2">
-                <button onclick="handleStake()" style="background: var(--text); color: black;">Stake PUD</button>
-                <button onclick="handleWithdraw()"
-                    style="background: transparent; border: 1px solid var(--border); color: white;">Unstake</button>
+                <button onclick="handleStake()" class="btn-primary-action">Stake PUD</button>
+                <button onclick="handleWithdraw()" class="btn-secondary-action">Unstake</button>
             </div>
         </div>
 
-        <div id="status">System Status: Online</div>
+        <div id="status-bar"
+            style="position: fixed; bottom: 20px; right: 20px; font-size: 0.8em; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2);">
+            System: <span id="status-text" class="neon-green">Online</span>
+        </div>
+
+        <footer style="text-align: center; font-size: 0.8em; opacity: 0.4; padding: 40px 0;">
+            <div style="margin-bottom: 10px;">
+                <a href="#" onclick="showDisclaimer(); return false;"
+                    style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Disclaimer</a>
+                |
+                <a href="#" onclick="showPrivacy(); return false;"
+                    style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Privacy
+                    Policy</a>
+            </div>
+            <div>Developed by <a href="https://www.pine.ink" target="_blank"
+                    style="color: white; text-decoration: none; border-bottom: 1px dotted white;">Pine Ink Group</a>
+            </div>
+        </footer>
+
+        <!-- Legal Modal -->
+        <div id="legalModal"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+            <div
+                style="background:  var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; max-width: 700px; max-height: 80vh; overflow-y: auto; padding: 40px; position: relative;">
+                <button onclick="closeLegalModal()"
+                    style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2em; cursor: pointer; padding: 0; width: auto;">×</button>
+                <h2 id="legalModalTitle" style="margin-top: 0; color: var(--pulse-cyan);"></h2>
+                <div id="legalModalContent" style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);"></div>
+            </div>
+        </div>
     </div>
 
+    <script src="legal-modals.js"></script>
     <script>
         // --- ⚙️ CONFIGURATION ---
         const ADDR = {
@@ -386,7 +206,7 @@
         const CHAIN_ID_DEC = 61564n;
         const CHAIN_ID_HEX = "0xF07C";
 
-        // Standard ABIs
+        // Minimal ABIs
         const ERC20_ABI = ["function balanceOf(address) view returns (uint256)", "function approve(address, uint256) returns (bool)"];
         const FRIDGE_ABI = [
             "function stake(uint256)", "function withdraw(uint256)", "function getReward()",
@@ -398,21 +218,22 @@
         let provider, signer;
 
         async function init() {
-            if (!window.ethereum) return updateStatus("Please install MetaMask!");
+            if (!window.ethereum) return updateStatus("⚠️ Install MetaMask");
             provider = new ethers.BrowserProvider(window.ethereum);
 
-            // Auto-check network but don't force popup immediately
             try {
                 const net = await provider.getNetwork();
                 if (net.chainId === CHAIN_ID_DEC) {
                     signer = await provider.getSigner();
-                    updateStatus("🟢 Wallet Connected");
+                    const addr = await signer.getAddress();
+                    updateStatus("🟢 Connected: " + addr.substring(0, 6) + "...");
+                    document.getElementById('gasRequestAddr').value = addr;
                     refreshData();
                     setInterval(refreshData, 6000);
                 } else {
                     updateStatus("🟡 Wrong Network");
                 }
-            } catch (e) { updateStatus("🟡 Waiting for Connection..."); }
+            } catch (e) { updateStatus("⚪ Waiting for Connection"); }
         }
 
         async function addNetwork() {
@@ -427,15 +248,12 @@
                         rpcUrls: [RPC_URL]
                     }]
                 });
-                // After adding, try to init again
                 init();
             } catch (error) { alert("Error: " + error.message); }
         }
 
         async function addToken(symbol) {
             if (!window.ethereum) return alert("Connect Wallet first!");
-
-            // Map symbol to address
             const tokenAddress = ADDR[symbol];
             if (!tokenAddress) return alert("Unknown Token");
 
@@ -460,14 +278,13 @@
             const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
             const pud = new ethers.Contract(ADDR.PUD, ERC20_ABI, signer);
 
-            // Fetch Data
             try {
                 const rate = await fridge.rewardRate();
                 const total = await fridge.totalSupply();
                 const earned = await fridge.earned(user);
                 const bal = await pud.balanceOf(user);
 
-                // APY Calc
+                // APY Calculation
                 const secondsInYear = 31536000n;
                 if (total > 0n) {
                     const annualRewards = rate * secondsInYear;
@@ -488,19 +305,28 @@
             return Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 1 }).format(num);
         }
 
-        // --- ACTIONS ---
         async function claimGift() {
             if (!signer) return addNetwork();
             const gift = new ethers.Contract(ADDR.GIFT, CLAIM_ABI, signer);
-            try { const tx = await gift.claimGift(); await tx.wait(); alert("Success! 1000 JELLO received."); }
-            catch (e) { alert("Error: Already claimed or Empty!"); }
+            try {
+                updateStatus("⏳ Claiming...");
+                const tx = await gift.claimGift();
+                await tx.wait();
+                alert("Success! 1000 JELLO received.");
+                updateStatus("🟢 Connected");
+            } catch (e) { alert("Error: Already claimed or Empty!"); updateStatus("🔴 Error"); }
         }
 
         async function claimFaucet() {
             if (!signer) return addNetwork();
             const faucet = new ethers.Contract(ADDR.FAUCET, CLAIM_ABI, signer);
-            try { const tx = await faucet.claim(); await tx.wait(); alert("Success! 20 JELLO received."); }
-            catch (e) { alert("Error: Come back later."); }
+            try {
+                updateStatus("⏳ Claiming...");
+                const tx = await faucet.claim();
+                await tx.wait();
+                alert("Success! 20 JELLO received.");
+                updateStatus("🟢 Connected");
+            } catch (e) { alert("Error: Come back later."); updateStatus("🔴 Error"); }
         }
 
         async function handleStake() {
@@ -511,12 +337,12 @@
             const pud = new ethers.Contract(ADDR.PUD, ERC20_ABI, signer);
             const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
             try {
-                updateStatus("⏳ Approving...");
+                updateStatus("⏳ Approving PUD...");
                 const tx1 = await pud.approve(ADDR.FRIDGE, wei); await tx1.wait();
-                updateStatus("❄️ Staking...");
+                updateStatus("❄️ Staking PUD...");
                 const tx2 = await fridge.stake(wei); await tx2.wait();
                 alert("Staked successfully!");
-                updateStatus("🟢 Online");
+                updateStatus("🟢 Connected");
                 refreshData();
             } catch (e) { alert("Error staking"); updateStatus("🔴 Error"); }
         }
@@ -526,14 +352,25 @@
             const amt = prompt("Amount to unstake?");
             if (!amt) return;
             const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
-            try { const tx = await fridge.withdraw(ethers.parseEther(amt)); await tx.wait(); refreshData(); }
-            catch (e) { alert("Error withdrawing"); }
+            try {
+                updateStatus("⏳ Withdrawing...");
+                const tx = await fridge.withdraw(ethers.parseEther(amt));
+                await tx.wait();
+                refreshData();
+                updateStatus("🟢 Connected");
+            } catch (e) { alert("Error withdrawing"); updateStatus("🔴 Error"); }
         }
 
         async function getRewards() {
             if (!signer) return addNetwork();
             const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
-            try { const tx = await fridge.getReward(); await tx.wait(); refreshData(); } catch (e) { }
+            try {
+                updateStatus("⏳ Claiming PUD...");
+                const tx = await fridge.getReward();
+                await tx.wait();
+                refreshData();
+                updateStatus("🟢 Connected");
+            } catch (e) { updateStatus("🔴 Error"); }
         }
 
         async function setMax() {
@@ -543,7 +380,23 @@
             document.getElementById('stakeAmount').value = ethers.formatEther(bal);
         }
 
-        function updateStatus(m) { document.getElementById('status').innerText = m; }
+        function requestGas() {
+            const addr = document.getElementById('gasRequestAddr').value;
+            if (!addr) return alert("Please enter your address first.");
+            const subject = "Gas Request for Gelatine Chain";
+            const body = `Please send initial JELLO gas to my address:\n\n${addr}\n\nThanks!`;
+            const mailtoLink = `mailto:gelatine@pine.ink?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+        function updateStatus(m) {
+            document.getElementById('status-text').innerText = m;
+            if (m.includes("Error") || m.includes("Install")) {
+                document.getElementById('status-text').className = "neon-pink";
+            } else {
+                document.getElementById('status-text').className = "neon-green";
+            }
+        }
 
         window.onload = init;
     </script>
