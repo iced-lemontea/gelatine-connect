@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Gelatine Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container { max-width: 600px; }
+    </style>
+</head>
+
+<body>
+
+    <div class="nav">
+        <a href="index.html">Command Center</a>
+        <a href="staking.html">The Fridge</a>
+        <a href="swap.html">WiggleSwap</a>
+        <a href="free-gifts.html">Free Gifts</a>
+        <a href="jam.html">Buy JAM</a>
+        <a href="mint.html">Mint JELLY</a>
+        <a href="about.html" class="active">About Us</a>
+    </div>
+
+    <div class="container">
+
+        <header style="text-align: center; margin-bottom: 50px;">
+            <div style="font-size: 5em; margin-bottom: 20px;">ℹ️</div>
+            <h1>About Gelatine</h1>
+            <div class="subhead">The Team Behind the Wiggle</div>
+        </header>
+
+        <div class="card">
+            <h3 style="color: var(--pulse-cyan);">Our Mission</h3>
+            <p style="opacity: 0.8; line-height: 1.6;">
+                Gelatine Network aims to be the stickiest layer in Web3. We believe in instant finality, zero stress, 
+                and a whole lot of wiggle. Our ecosystem is built for fun, engagement, and reliable decentralized finance.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3 style="color: var(--pulse-pink);">Contact Us</h3>
+            <p style="opacity: 0.8; margin-bottom: 20px;">
+                Have questions, proposals, or just want to say hi? Reach out to the team directly.
+            </p>
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; text-align: center;">
+                <a href="mailto:gelatine@pine.ink" style="color: white; text-decoration: none; font-size: 1.2em; font-weight: bold;">
+                    📧 gelatine@pine.ink
+                </a>
+            </div>
+        </div>
+
+        <footer style="text-align: center; font-size: 0.8em; opacity: 0.4; padding: 40px 0;">
+            <div style="margin-bottom: 10px;">
+                <a href="#" onclick="showDisclaimer(); return false;"
+                    style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Disclaimer</a>
+                |
+                <a href="#" onclick="showPrivacy(); return false;"
+                    style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Privacy
+                    Policy</a>
+            </div>
+            <div>Developed by <a href="https://www.pine.ink" target="_blank"
+                    style="color: white; text-decoration: none; border-bottom: 1px dotted white;">Pine Ink Group</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script src="legal-modals.js"></script>
+    <!-- Legal Modal Structure (Hidden) -->
+    <div id="legalModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div
+            style="background:  var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; max-width: 700px; max-height: 80vh; overflow-y: auto; padding: 40px; position: relative;">
+            <button onclick="closeLegalModal()"
+                style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2em; cursor: pointer; padding: 0; width: auto;">×</button>
+            <h2 id="legalModalTitle" style="margin-top: 0; color: var(--pulse-cyan);"></h2>
+            <div id="legalModalContent" style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);"></div>
+        </div>
+    </div>
+
+</body>
+</html>

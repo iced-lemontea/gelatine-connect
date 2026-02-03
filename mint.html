@@ -20,10 +20,7 @@
             margin-bottom: 30px;
         }
 
-        h1 {
-            margin: 0;
-            font-size: 2em;
-        }
+
 
         /* NFT Image Area */
         .nft-frame {
@@ -112,11 +109,13 @@
 
         /* === FLOATING NFT BACKGROUNDS === */
         .floating-nfts {
-            position: fixed;
+            position: absolute;
+            /* Relative to document height */
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            /* Will be set dynamically to document height */
             pointer-events: none;
             z-index: -1;
             overflow: hidden;
@@ -124,72 +123,58 @@
 
         .float-nft {
             position: absolute;
-            opacity: 0.3;
-            filter: blur(1px);
-            pointer-events: auto;
-            cursor: pointer;
-            transition: opacity 0.3s ease, filter 0.3s ease;
+            opacity: 1.0;
+            background: rgba(20, 5, 30, 0.4);
+            border-radius: 20px;
+            padding: 8px;
+            border: 2px solid var(--pulse-pink);
+            box-shadow: 0 0 15px rgba(250, 0, 255, 0.3), inset 0 0 10px rgba(250, 0, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
         }
 
-        .float-nft:hover {
-            opacity: 0.35;
-            filter: blur(0px);
+        .float-nft:nth-child(even) {
+            border-color: var(--pulse-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3), inset 0 0 10px rgba(0, 243, 255, 0.2);
         }
 
         .float-nft img {
             width: 100%;
             height: 100%;
             object-fit: contain;
+            border-radius: 12px;
         }
 
-        /* Individual NFT positions */
-        .nft-1 {
-            top: 8%;
-            left: 3%;
-            width: 140px;
-            height: 140px;
-            animation: floatDrift1 20s ease-in-out infinite;
+        @keyframes genericFloat {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            33% {
+                transform: translate(15px, -10px) rotate(1deg);
+            }
+
+            66% {
+                transform: translate(-10px, 15px) rotate(-1deg);
+            }
         }
 
-        .nft-1 img {
-            animation: wobbleFloat1 6s ease-in-out infinite;
+        @keyframes genericWobble {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
         }
 
-        .nft-2 {
-            top: 55%;
-            right: 5%;
-            width: 120px;
-            height: 120px;
-            animation: floatDrift2 25s ease-in-out infinite;
-        }
 
-        .nft-2 img {
-            animation: wobbleFloat2 7s ease-in-out infinite;
-        }
-
-        .nft-3 {
-            bottom: 12%;
-            left: 8%;
-            width: 130px;
-            height: 130px;
-            animation: floatDrift3 22s ease-in-out infinite;
-        }
-
-        .nft-3 img {
-            animation: wobbleFloat3 5.5s ease-in-out infinite;
-        }
-
-        .nft-4 {
-            top: 28%;
-            right: 12%;
-            width: 110px;
-            height: 110px;
-            animation: floatDrift4 18s ease-in-out infinite;
-        }
-
-        .nft-4 img {
-            animation: wobbleFloat4 6.5s ease-in-out infinite;
-        }
 
         /* Wobble animations */
         @keyframes wobbleFloat1 {
@@ -281,11 +266,11 @@
             }
 
             33% {
-                transform: translate(40px, -50px);
+                transform: translate(200px, -150px);
             }
 
             66% {
-                transform: translate(-30px, -25px);
+                transform: translate(-100px, 100px);
             }
         }
 
@@ -297,11 +282,11 @@
             }
 
             33% {
-                transform: translate(-45px, 35px);
+                transform: translate(-180px, 200px);
             }
 
             66% {
-                transform: translate(25px, -40px);
+                transform: translate(150px, -120px);
             }
         }
 
@@ -313,11 +298,11 @@
             }
 
             33% {
-                transform: translate(35px, 40px);
+                transform: translate(150px, 150px);
             }
 
             66% {
-                transform: translate(-35px, 25px);
+                transform: translate(-200px, -100px);
             }
         }
 
@@ -329,11 +314,11 @@
             }
 
             33% {
-                transform: translate(-28px, -30px);
+                transform: translate(-150px, -180px);
             }
 
             66% {
-                transform: translate(42px, 30px);
+                transform: translate(200px, 150px);
             }
         }
 
@@ -409,33 +394,26 @@
 <body>
 
     <!-- Floating NFT Backgrounds -->
-    <div class="floating-nfts">
-        <div class="float-nft nft-1">
-            <img src="images/1.png" alt="Jello Head">
-        </div>
-        <div class="float-nft nft-2">
-            <img src="images/36.png" alt="Jello Head">
-        </div>
-        <div class="float-nft nft-3">
-            <img src="images/59.png" alt="Jello Head">
-        </div>
-        <div class="float-nft nft-4">
-            <img src="images/75.png" alt="Jello Head">
-        </div>
+    <div class="floating-nfts" id="bg-nfts">
+        <!-- Generated by JS -->
     </div>
 
     <div class="nav">
         <a href="index.html">Command Center</a>
-        <a href="swap.html">Swap</a>
-        <a href="jam.html">Buy JAM Token</a>
-        <a href="mint.html" class="active">Mint Jelly Heads NFT</a>
+        <a href="staking.html">The Fridge</a>
+        <a href="swap.html">WiggleSwap</a>
+        <a href="free-gifts.html">Free Gifts</a>
+        <a href="jam.html">Buy JAM</a>
+        <a href="mint.html" class="active">Mint JELLY</a>
+        <a href="about.html">About Us</a>
     </div>
 
     <div class="container">
         <div class="logo-container">
-            <div style="font-size: 3em; margin-bottom: 10px;">🍮</div>
+            <div style="font-size: 3em; margin-bottom: 10px;">👾</div>
             <h1>Jelly Heads</h1>
-            <div style="font-size: 0.8em; opacity: 0.7; letter-spacing: 3px; margin-top: 5px;">PFP COLLECTION</div>
+            <div style="font-size: 0.8em; opacity: 0.7; letter-spacing: 3px; margin-top: 5px;">JELLY GENESIS COLLECTION
+            </div>
         </div>
 
         <!-- NFT INTRODUCTION SECTION -->
@@ -601,6 +579,7 @@
         // --- INIT & LOGIC ---
 
         async function init() {
+            generateBgNFTs();
             // Default load - Set simple preview
             document.getElementById("nftPreview").src = IMG_BASE_URI + "1.png";
         }
@@ -844,6 +823,64 @@
             } catch (error) {
                 console.error(error);
             }
+        }
+
+        // --- DYNAMIC BACKGROUND NFTS ---
+        function generateBgNFTs() {
+            const container = document.getElementById('bg-nfts');
+            const total = 10; // Increased to 10 for better coverage
+            const ids = new Set();
+            while (ids.size < total) {
+                ids.add(Math.floor(Math.random() * 96) + 1);
+            }
+            const idArray = Array.from(ids);
+
+            // Calculate document height to spread NFTs
+            const docHeight = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+            container.style.height = docHeight + 'px';
+
+            idArray.forEach((id, i) => {
+                const div = document.createElement('div');
+                div.className = 'float-nft';
+
+                // Original smaller size per user request
+                const size = 125 + Math.random() * 50;
+                div.style.width = size + 'px';
+                div.style.height = size + 'px';
+
+                // Vertical spread across the whole page
+                const topPos = (i / total) * 90 + 5; // Spread from 5% to 95%
+                div.style.top = topPos + '%';
+
+                // Side positioning (4 or 5 on each side)
+                const side = i % 2 === 0 ? 'left' : 'right';
+                const sideMargin = 2 + Math.random() * 10;
+                if (side === 'left') {
+                    div.style.left = sideMargin + '%';
+                } else {
+                    div.style.right = sideMargin + '%';
+                }
+
+                // Random animation properties
+                const animDuration = 10 + Math.random() * 10;
+                const animDelay = Math.random() * -20;
+                div.style.animation = `genericFloat ${animDuration}s ease-in-out ${animDelay}s infinite`;
+
+                const img = document.createElement('img');
+                img.src = `${IMG_BASE_URI}${id}.png`;
+                img.style.animation = `genericWobble ${4 + Math.random() * 4}s ease-in-out infinite`;
+
+                div.appendChild(img);
+                container.appendChild(div);
+
+                // Parallax logic: slightly follow scroll
+                const speed = 0.05 + Math.random() * 0.1; // Slow following speed
+                window.addEventListener('scroll', () => {
+                    const scrolled = window.scrollY;
+                    // Move the div slightly down as user scrolls
+                    div.style.transform = `translateY(${scrolled * speed}px)`;
+                });
+            });
         }
 
         window.onload = init;

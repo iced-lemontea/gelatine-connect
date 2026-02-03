@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Gifts | Gelatine Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            max-width: 600px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="nav">
+        <a href="index.html">Command Center</a>
+        <a href="staking.html">The Fridge</a>
+        <a href="swap.html">WiggleSwap</a>
+        <a href="free-gifts.html" class="active">Free Gifts</a>
+        <a href="jam.html">Buy JAM</a>
+        <a href="mint.html">Mint JELLY</a>
+        <a href="about.html">About Us</a>
+    </div>
+
+    <div class="container">
+
+        <header style="text-align: center; margin-bottom: 50px;">
+            <div style="font-size: 5em; margin-bottom: 20px;">🎁</div>
+            <h1>Free Gifts</h1>
+            <div class="subhead">Claim Your Assets & Gas</div>
+        </header>
+
+        <div class="card">
+            <div class="section-header">
+                <span style="font-size: 1.5em;">🎁</span> <span class="section-title">Claim Free Assets</span>
+            </div>
+            <div class="grid-2">
+                <button class="btn-action" onclick="claimGift()">
+                    <span style="font-size: 2em;">🎉</span>
+                    <span style="font-weight: 700; font-size: 1.2em;">Claim 1000 JELLO</span>
+                    <span style="font-size: 0.7em; opacity: 0.6; letter-spacing: 1px;">WELCOME BONUS</span>
+                </button>
+                <button class="btn-action" onclick="claimFaucet()">
+                    <span style="font-size: 2em;">💧</span>
+                    <span style="font-weight: 700; font-size: 1.2em;">Claim 20 JELLO</span>
+                    <span style="font-size: 0.7em; opacity: 0.6; letter-spacing: 1px;">DAILY FAUCET</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="card highlight-border">
+            <div class="section-header">
+                <span style="font-size: 1.5em;">⛽</span> <span class="section-title">Emergency Gas</span>
+            </div>
+            <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 20px;">
+                Stuck with 0 JELLO? Request a manual airdrop from the Chef.
+            </p>
+            <div class="input-group">
+                <input type="text" id="gasRequestAddr" placeholder="Paste your 0x... wallet address" />
+            </div>
+            <button class="btn-secondary-action" onclick="requestGas()">
+                📩 Request JELLO via Email
+            </button>
+        </div>
+
+        <div id="status-bar"
+            style="position: fixed; bottom: 20px; right: 20px; font-size: 0.8em; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2);">
+            System: <span id="status-text" class="neon-green">Online</span>
+        </div>
+
+        <footer style="text-align: center; font-size: 0.8em; opacity: 0.4; padding: 40px 0;">
+            <div style="margin-bottom: 10px;">
+                <a href="#" onclick="showDisclaimer(); return false;"
+                    style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Disclaimer</a>
+                |
+                <a href="#" onclick="showPrivacy(); return false;"
+                    style="color: white; text-decoration: none; margin: 0 10px; border-bottom: 1px dotted white;">Privacy
+                    Policy</a>
+            </div>
+            <div>Developed by <a href="https://www.pine.ink" target="_blank"
+                    style="color: white; text-decoration: none; border-bottom: 1px dotted white;">Pine Ink Group</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Legal Modal (Hidden) -->
+    <div id="legalModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;">
+        <div
+            style="background:  var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px; max-width: 700px; max-height: 80vh; overflow-y: auto; padding: 40px; position: relative;">
+            <button onclick="closeLegalModal()"
+                style="position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 2em; cursor: pointer; padding: 0; width: auto;">×</button>
+            <h2 id="legalModalTitle" style="margin-top: 0; color: var(--pulse-cyan);"></h2>
+            <div id="legalModalContent" style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);"></div>
+        </div>
+    </div>
+
+    <script src="legal-modals.js"></script>
+    <script>
+        // --- ⚙️ CONFIGURATION ---
+        const ADDR = {
+            FAUCET: "0x9Bf32d7AcA36F55Fa077eac1d7718f2F710577F1",
+            GIFT: "0xa58ea0b18D470D73a5628Ff768edEAa21D7bd938"
+        };
+        const RPC_URL = "https://rpc.pine.ink";
+        const CHAIN_ID_DEC = 61564n;
+        const CHAIN_ID_HEX = "0xF07C";
+
+        const CLAIM_ABI = ["function claim()", "function claimGift()"];
+
+        let provider, signer;
+
+        async function init() {
+            if (!window.ethereum) return updateStatus("⚠️ Install MetaMask");
+            provider = new ethers.BrowserProvider(window.ethereum);
+
+            try {
+                const net = await provider.getNetwork();
+                if (net.chainId === CHAIN_ID_DEC) {
+                    signer = await provider.getSigner();
+                    const addr = await signer.getAddress();
+                    updateStatus("🟢 Connected: " + addr.substring(0, 6) + "...");
+                    const gasInput = document.getElementById('gasRequestAddr');
+                    if (gasInput) gasInput.value = addr;
+                } else {
+                    updateStatus("🟡 Wrong Network");
+                    addNetwork(); // Auto-prompt switch if wrong
+                }
+            } catch (e) { updateStatus("⚪ Waiting for Connection"); }
+        }
+
+        async function addNetwork() {
+            if (!window.ethereum) return alert("MetaMask not found!");
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [{
+                        chainId: CHAIN_ID_HEX,
+                        chainName: 'Gelatine Network',
+                        nativeCurrency: { name: 'JELLO', symbol: 'JELLO', decimals: 18 },
+                        rpcUrls: [RPC_URL]
+                    }]
+                });
+                init();
+            } catch (error) { console.error(error); } // Silent error log
+        }
+
+        async function claimGift() {
+            if (!signer) return addNetwork();
+            const gift = new ethers.Contract(ADDR.GIFT, CLAIM_ABI, signer);
+            try {
+                updateStatus("⏳ Claiming...");
+                const tx = await gift.claimGift();
+                await tx.wait();
+                alert("Success! 1000 JELLO received.");
+                updateStatus("🟢 Connected");
+            } catch (e) { alert("Error: Already claimed or Empty!"); updateStatus("🔴 Error"); }
+        }
+
+        async function claimFaucet() {
+            if (!signer) return addNetwork();
+            const faucet = new ethers.Contract(ADDR.FAUCET, CLAIM_ABI, signer);
+            try {
+                updateStatus("⏳ Claiming...");
+                const tx = await faucet.claim();
+                await tx.wait();
+                alert("Success! 20 JELLO received.");
+                updateStatus("🟢 Connected");
+            } catch (e) { alert("Error: Come back later."); updateStatus("🔴 Error"); }
+        }
+
+        function requestGas() {
+            const addr = document.getElementById('gasRequestAddr').value;
+            if (!addr) return alert("Please enter your address first.");
+            const subject = "Gas Request for Gelatine Chain";
+            const body = `Please send initial JELLO gas to my address:\n\n${addr}\n\nThanks!`;
+            const mailtoLink = `mailto:gelatine@pine.ink?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+        }
+
+        function updateStatus(m) {
+            document.getElementById('status-text').innerText = m;
+            if (m.includes("Error") || m.includes("Install")) {
+                document.getElementById('status-text').className = "neon-pink";
+            } else {
+                document.getElementById('status-text').className = "neon-green";
+            }
+        }
+
+        window.onload = init;
+    </script>
+</body>
+
+</html>

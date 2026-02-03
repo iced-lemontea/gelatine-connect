@@ -14,10 +14,13 @@
 <body>
 
     <div class="nav">
-        <a href="index.html" class="active">Command Center</a>
-        <a href="swap.html">Swap</a>
-        <a href="jam.html">Buy JAM Token</a>
-        <a href="mint.html">Mint Jelly Heads NFT</a>
+        <a href="index.html" class="active">Command Center</a> <!-- 🍮 -->
+        <a href="staking.html">The Fridge</a> <!-- ❄️ -->
+        <a href="swap.html">WiggleSwap</a> <!-- 🪱 -->
+        <a href="free-gifts.html">Free Gifts</a> <!-- 🎁 -->
+        <a href="jam.html">Buy JAM</a> <!-- 🍓 -->
+        <a href="mint.html">Mint JELLY</a> <!-- 👾 -->
+        <a href="about.html">About Us</a> <!-- ℹ️ -->
     </div>
 
     <div class="container">
@@ -62,6 +65,19 @@
             </div>
         </section>
 
+        <!-- Informational Card about Gifts -->
+        <div class="card"
+            style="text-align: center; border: 1px dashed var(--pulse-green); background: rgba(0, 255, 157, 0.05);">
+            <div style="font-size: 1.5em; margin-bottom: 10px;">🎁 Free Goodies Available!</div>
+            <p style="margin: 0 0 15px 0; opacity: 0.9; line-height: 1.6;">
+                Every unique address is eligible for a <strong>Free Welcome Gift</strong> (1000 JELLO).<br>
+                Need gas? The <strong>Daily Faucet</strong> is open for everyone.
+            </p>
+            <a href="free-gifts.html" class="btn-secondary-action"
+                style="text-decoration: none; padding: 10px 25px; display: inline-block; width: auto;">Go to Free Gifts
+                Page &rarr;</a>
+        </div>
+
         <div class="card">
             <div class="section-header">
                 <span style="font-size: 1.5em;">🔧</span> <span class="section-title">Wallet Setup</span>
@@ -76,86 +92,6 @@
                 <button class="btn-metamask" onclick="addToken('JAM')">
                     <span>🍓</span> Add JAM to MM
                 </button>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="section-header">
-                <span style="font-size: 1.5em;">🎁</span> <span class="section-title">Claim Free Assets</span>
-            </div>
-            <div class="grid-2">
-                <button class="btn-action" onclick="claimGift()">
-                    <span style="font-size: 2em;">🎉</span>
-                    <span style="font-weight: 700; font-size: 1.2em;">Claim 1000 JELLO</span>
-                    <span style="font-size: 0.7em; opacity: 0.6; letter-spacing: 1px;">WELCOME BONUS</span>
-                </button>
-                <button class="btn-action" onclick="claimFaucet()">
-                    <span style="font-size: 2em;">💧</span>
-                    <span style="font-weight: 700; font-size: 1.2em;">Claim 20 JELLO</span>
-                    <span style="font-size: 0.7em; opacity: 0.6; letter-spacing: 1px;">DAILY FAUCET</span>
-                </button>
-            </div>
-        </div>
-
-        <div class="card highlight-border">
-            <div class="section-header">
-                <span style="font-size: 1.5em;">⛽</span> <span class="section-title">Emergency Gas</span>
-            </div>
-            <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 20px;">
-                Stuck with 0 JELLO? Request a manual airdrop from the Chef.
-            </p>
-            <div class="input-group">
-                <input type="text" id="gasRequestAddr" placeholder="Paste your 0x... wallet address" />
-            </div>
-            <button class="btn-secondary-action" onclick="requestGas()">
-                📩 Request JELLO via Email
-            </button>
-        </div>
-
-        <div class="card">
-            <div class="section-header">
-                <span style="font-size: 1.5em;">❄️</span> <span class="section-title">The Fridge (Staking)</span>
-            </div>
-
-            <div class="grid-2" style="margin-bottom: 25px;">
-                <div style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px;">
-                    <div class="neon-pink" style="font-size: 2.5em; font-weight: bold;" id="liveApy">---%</div>
-                    <div style="font-size: 0.8em; opacity: 0.6; text-transform: uppercase; margin-top: 5px;">Current APY
-                    </div>
-                </div>
-                <div style="text-align: center; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px;">
-                    <div style="font-size: 2.5em; font-weight: bold; color: white;" id="totalStaked">0</div>
-                    <div style="font-size: 0.8em; opacity: 0.6; text-transform: uppercase; margin-top: 5px;">Total PUD
-                        Locked</div>
-                </div>
-            </div>
-
-            <div
-                style="background: rgba(0, 255, 157, 0.05); border: 1px solid rgba(0, 255, 157, 0.2); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 30px;">
-                <div style="font-size: 0.8em; opacity: 0.8; text-transform: uppercase; margin-bottom: 5px;">Unclaimed
-                    Rewards</div>
-                <div style="font-size: 3em; color: var(--pulse-green); font-weight: 700; text-shadow: 0 0 30px rgba(0,255,157,0.3);"
-                    id="earned">0.0000</div>
-                <button onclick="getRewards()"
-                    style="background: var(--pulse-green); color: black; padding: 10px 30px; font-weight: bold; border: none; margin-top: 15px; border-radius: 30px; cursor: pointer;">Claim
-                    Rewards</button>
-            </div>
-
-            <div
-                style="display: flex; justify-content: space-between; font-size: 0.9em; margin-bottom: 10px; opacity: 0.7; padding: 0 10px;">
-                <span>Stake Amount</span>
-                <span>Balance: <span id="walletBal">0</span> PUD</span>
-            </div>
-
-            <div class="input-group">
-                <input type="number" id="stakeAmount" placeholder="0.0">
-                <span class="max-btn" onclick="setMax()"
-                    style="color: var(--pulse-pink); cursor: pointer; font-weight: bold;">MAX</span>
-            </div>
-
-            <div class="grid-2">
-                <button onclick="handleStake()" class="btn-primary-action">Stake PUD</button>
-                <button onclick="handleWithdraw()" class="btn-secondary-action">Unstake</button>
             </div>
         </div>
 
@@ -195,25 +131,13 @@
     <script>
         // --- ⚙️ CONFIGURATION ---
         const ADDR = {
-            FRIDGE: "0x5E1a69F97Be2203C301022eCEaED98C4A30F26ab",
-            PUD: "0xdDD5e1b52670667Fd7F38f8B7F8CcBc007fB9B97",
             WJELLO: "0xd5d395383Edddb48643bC19870308918670Fc80D",
-            JAM: "0xcA2144D681137eD0F7A4CCb941fe2d834D1A78bb",
-            FAUCET: "0x9Bf32d7AcA36F55Fa077eac1d7718f2F710577F1",
-            GIFT: "0xa58ea0b18D470D73a5628Ff768edEAa21D7bd938"
+            PUD: "0xdDD5e1b52670667Fd7F38f8B7F8CcBc007fB9B97",
+            JAM: "0xcA2144D681137eD0F7A4CCb941fe2d834D1A78bb"
         };
         const RPC_URL = "https://rpc.pine.ink";
         const CHAIN_ID_DEC = 61564n;
         const CHAIN_ID_HEX = "0xF07C";
-
-        // Minimal ABIs
-        const ERC20_ABI = ["function balanceOf(address) view returns (uint256)", "function approve(address, uint256) returns (bool)"];
-        const FRIDGE_ABI = [
-            "function stake(uint256)", "function withdraw(uint256)", "function getReward()",
-            "function earned(address) view returns (uint256)", "function totalSupply() view returns (uint256)",
-            "function rewardRate() view returns (uint256)"
-        ];
-        const CLAIM_ABI = ["function claim()", "function claimGift()"];
 
         let provider, signer;
 
@@ -227,11 +151,9 @@
                     signer = await provider.getSigner();
                     const addr = await signer.getAddress();
                     updateStatus("🟢 Connected: " + addr.substring(0, 6) + "...");
-                    document.getElementById('gasRequestAddr').value = addr;
-                    refreshData();
-                    setInterval(refreshData, 6000);
                 } else {
                     updateStatus("🟡 Wrong Network");
+                    addNetwork();
                 }
             } catch (e) { updateStatus("⚪ Waiting for Connection"); }
         }
@@ -270,123 +192,6 @@
                     },
                 });
             } catch (error) { console.error(error); }
-        }
-
-        async function refreshData() {
-            if (!signer) return;
-            const user = await signer.getAddress();
-            const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
-            const pud = new ethers.Contract(ADDR.PUD, ERC20_ABI, signer);
-
-            try {
-                const rate = await fridge.rewardRate();
-                const total = await fridge.totalSupply();
-                const earned = await fridge.earned(user);
-                const bal = await pud.balanceOf(user);
-
-                // APY Calculation
-                const secondsInYear = 31536000n;
-                if (total > 0n) {
-                    const annualRewards = rate * secondsInYear;
-                    const apy = (annualRewards * 100n) / total;
-                    document.getElementById('liveApy').innerText = apy.toString() + "%";
-                } else {
-                    document.getElementById('liveApy').innerText = "∞%";
-                }
-
-                document.getElementById('earned').innerText = parseFloat(ethers.formatEther(earned)).toFixed(4);
-                document.getElementById('totalStaked').innerText = formatCompact(total);
-                document.getElementById('walletBal').innerText = Math.round(ethers.formatEther(bal));
-            } catch (e) { console.log("Data fetch error", e); }
-        }
-
-        function formatCompact(bgInt) {
-            const num = parseFloat(ethers.formatEther(bgInt));
-            return Intl.NumberFormat('en-US', { notation: "compact", maximumFractionDigits: 1 }).format(num);
-        }
-
-        async function claimGift() {
-            if (!signer) return addNetwork();
-            const gift = new ethers.Contract(ADDR.GIFT, CLAIM_ABI, signer);
-            try {
-                updateStatus("⏳ Claiming...");
-                const tx = await gift.claimGift();
-                await tx.wait();
-                alert("Success! 1000 JELLO received.");
-                updateStatus("🟢 Connected");
-            } catch (e) { alert("Error: Already claimed or Empty!"); updateStatus("🔴 Error"); }
-        }
-
-        async function claimFaucet() {
-            if (!signer) return addNetwork();
-            const faucet = new ethers.Contract(ADDR.FAUCET, CLAIM_ABI, signer);
-            try {
-                updateStatus("⏳ Claiming...");
-                const tx = await faucet.claim();
-                await tx.wait();
-                alert("Success! 20 JELLO received.");
-                updateStatus("🟢 Connected");
-            } catch (e) { alert("Error: Come back later."); updateStatus("🔴 Error"); }
-        }
-
-        async function handleStake() {
-            if (!signer) return addNetwork();
-            const amt = document.getElementById('stakeAmount').value;
-            if (!amt) return;
-            const wei = ethers.parseEther(amt);
-            const pud = new ethers.Contract(ADDR.PUD, ERC20_ABI, signer);
-            const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
-            try {
-                updateStatus("⏳ Approving PUD...");
-                const tx1 = await pud.approve(ADDR.FRIDGE, wei); await tx1.wait();
-                updateStatus("❄️ Staking PUD...");
-                const tx2 = await fridge.stake(wei); await tx2.wait();
-                alert("Staked successfully!");
-                updateStatus("🟢 Connected");
-                refreshData();
-            } catch (e) { alert("Error staking"); updateStatus("🔴 Error"); }
-        }
-
-        async function handleWithdraw() {
-            if (!signer) return addNetwork();
-            const amt = prompt("Amount to unstake?");
-            if (!amt) return;
-            const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
-            try {
-                updateStatus("⏳ Withdrawing...");
-                const tx = await fridge.withdraw(ethers.parseEther(amt));
-                await tx.wait();
-                refreshData();
-                updateStatus("🟢 Connected");
-            } catch (e) { alert("Error withdrawing"); updateStatus("🔴 Error"); }
-        }
-
-        async function getRewards() {
-            if (!signer) return addNetwork();
-            const fridge = new ethers.Contract(ADDR.FRIDGE, FRIDGE_ABI, signer);
-            try {
-                updateStatus("⏳ Claiming PUD...");
-                const tx = await fridge.getReward();
-                await tx.wait();
-                refreshData();
-                updateStatus("🟢 Connected");
-            } catch (e) { updateStatus("🔴 Error"); }
-        }
-
-        async function setMax() {
-            if (!signer) return;
-            const pud = new ethers.Contract(ADDR.PUD, ERC20_ABI, signer);
-            const bal = await pud.balanceOf(await signer.getAddress());
-            document.getElementById('stakeAmount').value = ethers.formatEther(bal);
-        }
-
-        function requestGas() {
-            const addr = document.getElementById('gasRequestAddr').value;
-            if (!addr) return alert("Please enter your address first.");
-            const subject = "Gas Request for Gelatine Chain";
-            const body = `Please send initial JELLO gas to my address:\n\n${addr}\n\nThanks!`;
-            const mailtoLink = `mailto:gelatine@pine.ink?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;
         }
 
         function updateStatus(m) {
