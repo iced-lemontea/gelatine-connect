@@ -617,9 +617,18 @@
 
                 // Check Network
                 const network = await provider.getNetwork();
-                if (network.chainId !== parseInt(CHAIN_ID, 16)) {
-                    alert(`Please switch to Gelatine Network (Chain ID: ${CHAIN_ID})`);
-                    return;
+                const expectedChainId = BigInt(parseInt(CHAIN_ID, 16));
+
+                if (network.chainId !== expectedChainId) {
+                    try {
+                        await window.ethereum.request({
+                            method: 'wallet_switchEthereumChain',
+                            params: [{ chainId: CHAIN_ID }]
+                        });
+                    } catch (e) {
+                        alert(`Please switch to Gelatine Network (Chain ID: ${CHAIN_ID})`);
+                        return;
+                    }
                 }
 
                 signer = await provider.getSigner();
@@ -667,7 +676,6 @@
 
             // Select a random one from available
             selectRandomNFT();
-            setStatus(`✅ Found ${availableIds.length} available Jello Heads`, "#4caf50");
         }
 
         // Select and display a random NFT from available IDs
@@ -681,6 +689,8 @@
             document.getElementById("nextIdDisplay").innerText = currentRandomId;
             document.getElementById("manualTokenId").value = currentRandomId;
             document.getElementById("nftPreview").src = IMG_BASE_URI + currentRandomId + ".png";
+
+            setStatus(`✅ Found ${availableIds.length} available Jello Heads`, "#4caf50");
         }
 
         async function refreshData() {
@@ -689,15 +699,7 @@
                 btn.disabled = true;
                 btn.innerText = "Checking Status...";
 
-                // 1. Get Next ID
-                const currentStoredId = await nftContract.nextTokenId();
-                currentNextId = Number(currentStoredId) + 1;
-
-                document.getElementById("nextIdDisplay").innerText = currentNextId;
-                document.getElementById("manualTokenId").value = currentNextId;
-
-                // Update Image Preview
-                document.getElementById("nftPreview").src = IMG_BASE_URI + currentNextId + ".png";
+                // Note: currentRandomId is already set by loadAvailableNFTs -> selectRandomNFT
 
                 // 2. Check JAM Balance
                 const balance = await jamContract.balanceOf(userAddress);
