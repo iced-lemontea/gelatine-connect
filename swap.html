@@ -14,6 +14,11 @@
             max-width: 480px;
         }
 
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         .logo {
             font-size: 3em;
             display: inline-block;
@@ -157,15 +162,20 @@
 
     <div class="container">
         <div class="logo-container">
-            <span class="logo">🪱</span>
+            <div class="logo">🪱</div>
             <h1>WiggleSwap</h1>
+            <div class="subhead">Liquid Swaps, Wobbly Gains</div>
         </div>
 
         <div class="card">
             <div id="connect-overlay">
                 <h2 style="color: white; margin-bottom: 10px;">Connect Wallet</h2>
-                <button class="connect-btn" onclick="connectWallet()">⚡ Connect Now</button>
+                <div style="font-size: 0.9em; opacity: 0.7; margin-bottom: 20px;">Please connect to Gelatine Network to
+                    swap tokens</div>
+                <button class="connect-btn" onclick="connectWallet()">⚡ Connect Wallet</button>
             </div>
+
+
 
             <div id="app-content" style="filter: blur(10px); pointer-events: none; transition: 0.5s;">
 
@@ -365,6 +375,19 @@
         ];
         const WJELLO_ABI = ["function deposit() payable", "function withdraw(uint amount)"];
 
+        async function init() {
+            if (!window.ethereum) return updateStatus("⚠️ Install MetaMask");
+            provider = new ethers.BrowserProvider(window.ethereum);
+
+            try {
+                const accounts = await provider.listAccounts();
+                if (accounts.length > 0) {
+                    connectWallet();
+                } else {
+                    updateStatus("⚪ Waiting for Connection");
+                }
+            } catch (e) { updateStatus("⚪ Waiting for Connection"); }
+        }
         async function connectWallet() {
             if (!window.ethereum) return alert("Install MetaMask");
             provider = new ethers.BrowserProvider(window.ethereum);
@@ -708,14 +731,33 @@
 
         function setStatus(msg, color) {
             const el = document.getElementById('status');
-            el.innerText = msg;
-            el.style.color = color;
+            if (el) {
+                el.innerText = msg;
+                el.style.color = color;
+            }
+            updateStatus(msg);
+        }
+
+        function updateStatus(m) {
+            const el = document.getElementById('status-text');
+            if (!el) return;
+            el.innerText = m;
+            if (m.includes("Failed") || m.includes("Error") || m.includes("❌") || m.includes("⚠️") || m.includes("Wrong") || m.includes("Install")) {
+                el.className = "neon-pink";
+            } else {
+                el.className = "neon-green";
+            }
         }
 
         function showDisclaimer() { alert("Disclaimer: This is a testnet."); }
         function showPrivacy() { alert("Privacy: No data collected."); }
         function closeLegalModal() { document.getElementById('legalModal').style.display = 'none'; }
     </script>
+    <div id="status-bar"
+        style="position: fixed; bottom: 20px; right: 20px; font-size: 0.8em; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); z-index: 1000;">
+        System: <span id="status-text" class="neon-green">Online</span>
+    </div>
+
 </body>
 
 </html>

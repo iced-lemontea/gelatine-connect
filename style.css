@@ -54,8 +54,8 @@ body {
 
 /* --- Typography --- */
 h1 {
-    font-size: 4em;
-    /* Reduced from 5em to fit better on subpages */
+    font-size: 3.5em;
+    /* Reduced to 3.5em to fit better on subpages */
     margin: 0;
     background: linear-gradient(90deg, #ffffff 0%, #ffffff 60%, var(--pulse-pink) 100%);
     background-clip: text;
@@ -65,7 +65,8 @@ h1 {
     letter-spacing: -1px;
     font-weight: 800;
     filter: drop-shadow(0 0 15px rgba(250, 0, 255, 0.3));
-    white-space: nowrap;
+    /* white-space: nowrap; - Removed to prevent clipping on small containers */
+    line-height: 1.1;
 }
 
 .subhead {

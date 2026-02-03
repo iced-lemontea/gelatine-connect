@@ -113,6 +113,7 @@
         <div class="jar-container">
             <div class="jar">🍓</div>
             <h1>Buy JAM Token</h1>
+            <div class="subhead">Sweet Fuel for the Mint</div>
             <div
                 style="font-size: 0.9em; margin-top: 10px; opacity: 0.9; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.5;">
                 JAM is the official currency for minting Jelly Genesis NFTs.<br>Stock up now!
@@ -166,10 +167,28 @@
         let decimals = 18;
         const CHAIN_ID = "0xF07C"; // 61564
 
+        async function init() {
+            if (!window.ethereum) return updateStatus("⚠️ Install MetaMask");
+            provider = new ethers.BrowserProvider(window.ethereum);
+
+            try {
+                const accounts = await provider.listAccounts();
+                if (accounts.length > 0) {
+                    await connect(); // reused existing connect if possible, or just setup signer
+                } else {
+                    updateStatus("⚪ Waiting for Connection");
+                }
+            } catch (e) { updateStatus("⚪ Waiting for Connection"); }
+        }
+
         async function connect() {
             if (!window.ethereum) return alert("Install MetaMask");
             provider = new ethers.BrowserProvider(window.ethereum);
             try {
+                // If checking silently, listAccounts first? 
+                // But connect() is triggered by button usually. 
+                // Let's make connect() robust.
+
                 await provider.send("eth_requestAccounts", []);
 
                 // Check Network
@@ -183,13 +202,29 @@
                 signer = await provider.getSigner();
 
                 const btn = document.getElementById('mainBtn');
-                btn.innerText = "BUY JAM";
-                btn.onclick = buyJam;
+                if (btn) {
+                    btn.innerText = "BUY JAM";
+                    btn.onclick = buyJam;
+                }
 
                 initContract();
             } catch (e) {
                 console.error(e);
-                alert("Connection Error");
+                updateStatus("❌ Connection Error");
+                // alert("Connection Error"); // Removing alert on auto-connect failure if any
+            }
+        }
+
+        window.onload = init;
+
+        function updateStatus(m) {
+            const el = document.getElementById('status-text');
+            if (!el) return;
+            el.innerText = m;
+            if (m.includes("Failed") || m.includes("Error") || m.includes("❌") || m.includes("⚠️") || m.includes("Wrong") || m.includes("Install")) {
+                el.className = "neon-pink";
+            } else {
+                el.className = "neon-green";
             }
         }
 
@@ -201,6 +236,7 @@
                 const bal = await jamContract.balanceOf(user);
                 try { decimals = await jamContract.decimals(); } catch (e) { decimals = 18; }
                 document.getElementById('jamBal').innerText = ethers.formatUnits(bal, decimals);
+                updateStatus("🟢 Connected: " + user.substring(0, 6) + "...");
 
                 const conditionId = await jamContract.getActiveClaimConditionId();
                 const condition = await jamContract.getClaimConditionById(conditionId);
@@ -296,6 +332,11 @@
             <h2 id="legalModalTitle" style="margin-top: 0; color: var(--pulse-cyan);"></h2>
             <div id="legalModalContent" style="line-height: 1.8; color: rgba(255, 255, 255, 0.9);"></div>
         </div>
+    </div>
+
+    <div id="status-bar"
+        style="position: fixed; bottom: 20px; right: 20px; font-size: 0.8em; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); z-index: 1000;">
+        System: <span id="status-text" class="neon-green">Online</span>
     </div>
 
     <footer style="text-align: center; font-size: 0.8em; opacity: 0.4; padding: 40px 0; margin-top: 40px;">

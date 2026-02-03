@@ -412,8 +412,7 @@
         <div class="logo-container">
             <div style="font-size: 3em; margin-bottom: 10px;">👾</div>
             <h1>Jelly Heads</h1>
-            <div style="font-size: 0.8em; opacity: 0.7; letter-spacing: 3px; margin-top: 5px;">JELLY GENESIS COLLECTION
-            </div>
+            <div class="subhead">Jelly Genesis Collection</div>
         </div>
 
         <!-- NFT INTRODUCTION SECTION -->
@@ -582,6 +581,24 @@
             generateBgNFTs();
             // Default load - Set simple preview
             document.getElementById("nftPreview").src = IMG_BASE_URI + "1.png";
+
+            if (!window.ethereum) {
+                updateStatus("⚠️ Install MetaMask");
+                return;
+            }
+            provider = new ethers.BrowserProvider(window.ethereum);
+
+            try {
+                const accounts = await provider.listAccounts();
+                if (accounts.length > 0) {
+                    await connectWallet();
+                } else {
+                    updateStatus("⚪ Waiting for Connection");
+                }
+            } catch (e) {
+                console.error("Error checking accounts on init:", e);
+                updateStatus("⚪ Waiting for Connection");
+            }
         }
 
         async function connectWallet() {
@@ -604,8 +621,22 @@
                             method: 'wallet_switchEthereumChain',
                             params: [{ chainId: CHAIN_ID }]
                         });
-                    } catch (e) {
-                        alert(`Please switch to Gelatine Network (Chain ID: ${CHAIN_ID})`);
+                    } catch (switchError) {
+                        // This error code indicates that the chain has not been added to MetaMask.
+                        if (switchError.code === 4902) {
+                            try {
+                                await window.ethereum.request({
+                                    method: 'wallet_addEthereumChain',
+                                    params: [{
+                                        chainId: CHAIN_ID,
+                                        chainName: 'Gelatine Network',
+                                        nativeCurrency: { name: 'JELLO', symbol: 'JELLO', decimals: 18 },
+                                        rpcUrls: ['https://rpc.pine.ink']
+                                    }]
+                                });
+                            } catch (addError) { console.error(addError); }
+                        }
+                        alert("Please switch to Gelatine Network");
                         return;
                     }
                 }
@@ -617,17 +648,23 @@
                 nftContract = new ethers.Contract(NFT_ADDRESS, NFT_ABI, signer);
                 jamContract = new ethers.Contract(JAM_ADDRESS, JAM_ABI, signer);
 
-                document.getElementById("actionBtn").innerText = "Loading...";
-                document.getElementById("actionBtn").disabled = true;
+                const btn = document.getElementById("actionBtn"); // Changed from mintBtn to actionBtn
+                btn.innerText = "MINT NOW (9999 JAM)";
+                btn.onclick = mintNft; // Changed from mintNFT to mintNft
+                btn.classList.remove("btn-disabled"); // This class doesn't exist in the original, but keeping it as per instruction
+                btn.disabled = false;
 
+                updateStatus("🟢 Connected: " + userAddress.substring(0, 6) + "...");
                 await loadAvailableNFTs();
                 await refreshData();
 
             } catch (error) {
                 console.error(error);
-                setStatus("Connection failed: " + error.message, "red");
+                setStatus("Connection failed: " + error.message, "red"); // Changed from updateStatus to setStatus
             }
         }
+
+        window.onload = init;
 
         // Load all available (unminted) NFT IDs
         async function loadAvailableNFTs() {
@@ -776,8 +813,22 @@
 
         function setStatus(msg, color) {
             const el = document.getElementById("status");
-            el.innerText = msg;
-            el.style.color = color || "white";
+            if (el) {
+                el.innerText = msg;
+                el.style.color = color || "white";
+            }
+            updateStatus(msg);
+        }
+
+        function updateStatus(m) {
+            const el = document.getElementById('status-text');
+            if (!el) return;
+            el.innerText = m;
+            if (m.includes("Failed") || m.includes("Error") || m.includes("❌") || m.includes("⚠️") || m.includes("Wrong") || m.includes("Install")) {
+                el.className = "neon-pink";
+            } else {
+                el.className = "neon-green";
+            }
         }
 
         // --- WALLET TOOLS ---
@@ -910,6 +961,11 @@
         <div>Developed by <a href="https://www.pine.ink" target="_blank"
                 style="color: white; text-decoration: none; border-bottom: 1px dotted white;">Pine Ink Group</a></div>
     </footer>
+
+    <div id="status-bar"
+        style="position: fixed; bottom: 20px; right: 20px; font-size: 0.8em; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2); z-index: 1000;">
+        System: <span id="status-text" class="neon-green">Online</span>
+    </div>
 
     <script src="legal-modals.js"></script>
 </body>

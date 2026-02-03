@@ -262,11 +262,13 @@
         }
 
         function updateStatus(m) {
-            document.getElementById('status-text').innerText = m;
-            if (m.includes("Error") || m.includes("Install")) {
-                document.getElementById('status-text').className = "neon-pink";
+            const el = document.getElementById('status-text');
+            if (!el) return;
+            el.innerText = m;
+            if (m.includes("Failed") || m.includes("Error") || m.includes("❌") || m.includes("⚠️") || m.includes("Wrong") || m.includes("Install") || m.includes("Wait") || m.includes("🟡")) {
+                el.className = "neon-pink";
             } else {
-                document.getElementById('status-text').className = "neon-green";
+                el.className = "neon-green";
             }
         }
 
