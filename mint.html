@@ -527,12 +527,9 @@
                     <span>💎</span> Add JAM Token to MetaMask
                 </button>
 
-                <div class="input-group">
-                    <input type="number" id="manualTokenId" class="id-input" placeholder="ID" min="1">
-                    <button class="btn-secondary" style="flex:1;" onclick="addNftToWallet()">
-                        <span>🦊</span> Add NFT to MetaMask
-                    </button>
-                </div>
+                <button class="btn-secondary" onclick="addNftToWallet()">
+                    <span>🦊</span> Update NFT to metamask
+                </button>
             </div>
         </div>
     </div>
@@ -865,32 +862,62 @@
             }
         }
 
-        async function addNftToWallet(tokenId) {
-            // Use provided ID, or lastMintedId, or manual input as fallback
-            const idToTrack = tokenId || lastMintedId || document.getElementById("manualTokenId").value;
-
-            if (!idToTrack) {
-                alert("Please enter a token ID or mint an NFT first");
+        async function addNftToWallet() {
+            if (!userAddress) {
+                alert("Please connect your wallet first");
                 return;
             }
 
-            try {
-                await window.ethereum.request({
-                    method: 'wallet_watchAsset',
-                    params: {
-                        type: 'ERC721',
-                        options: {
-                            address: NFT_ADDRESS,
-                            tokenId: String(idToTrack),
-                        },
-                    },
-                });
-            } catch (error) {
-                console.error(error);
+            setStatus("🔎 Scanning for your Jello Heads...", "white");
+            let foundAny = false;
+            let addedCount = 0;
+
+            // Total 96 NFTs in collection
+            for (let id = 1; id <= 96; id++) {
+                try {
+                    // Check ownership
+                    const owner = await nftContract.ownerOf(id);
+
+                    if (owner.toLowerCase() === userAddress.toLowerCase()) {
+                        foundAny = true;
+                        setStatus(`🦊 Adding Jello Head #${id} to MetaMask...`, "#00F3FF");
+
+                        try {
+                            await window.ethereum.request({
+                                method: 'wallet_watchAsset',
+                                params: {
+                                    type: 'ERC721',
+                                    options: {
+                                        address: NFT_ADDRESS,
+                                        tokenId: String(id),
+                                    },
+                                },
+                            });
+                            addedCount++;
+                        } catch (watchError) {
+                            console.error(`Error adding token ${id}:`, watchError);
+                        }
+                    }
+                } catch (e) {
+                    // Token not minted or contract error, skip
+                }
+            }
+
+            if (foundAny) {
+                setStatus(`✅ Update complete! Processed ${addedCount} NFTs.`, "#4caf50");
+            } else {
+                setStatus("ℹ️ No Jello Heads found in your wallet.", "#ffb74d");
             }
         }
 
         // --- DYNAMIC BACKGROUND NFTS ---
+        const LOCAL_FALLBACKS = ["1.png", "36.png", "59.png", "75.png"];
+
+        function getRandomLocalImage() {
+            const img = LOCAL_FALLBACKS[Math.floor(Math.random() * LOCAL_FALLBACKS.length)];
+            return `images/${img}`;
+        }
+
         function generateBgNFTs() {
             const container = document.getElementById('bg-nfts');
             const total = 10; // Increased to 10 for better coverage
@@ -935,6 +962,13 @@
                 img.src = `${IMG_BASE_URI}${id}.png`;
                 img.style.animation = `genericWobble ${4 + Math.random() * 4}s ease-in-out infinite`;
 
+                // FALLBACK LOGIC
+                img.onerror = function () {
+                    console.log(`Image ${id} failed to load from IPFS, using local fallback.`);
+                    this.src = getRandomLocalImage();
+                    this.onerror = null; // Prevent infinite loop if local also fails
+                };
+
                 div.appendChild(img);
                 container.appendChild(div);
 
@@ -947,6 +981,13 @@
                 });
             });
         }
+
+        // Add fallback for main preview too
+        document.getElementById("nftPreview").onerror = function () {
+            console.log("Main preview failed to load from IPFS, using local fallback.");
+            this.src = getRandomLocalImage();
+            this.onerror = null;
+        };
 
         window.onload = init;
     </script>
