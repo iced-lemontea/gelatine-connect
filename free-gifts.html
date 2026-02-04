@@ -33,11 +33,11 @@
 
         <div class="nav-links">
             <a href="index.html">Command Center</a>
-            <a href="staking.html">The Fridge</a>
+            <a href="staking.html">The Fridge (Staking)</a>
             <a href="swap.html">WiggleSwap</a>
             <a href="free-gifts.html" class="active">Free Gifts</a>
             <a href="jam.html">Buy JAM</a>
-            <a href="mint.html">Mint JELLY</a>
+            <a href="mint.html">Mint NFT</a>
             <a href="about.html">About Us</a>
         </div>
     </div>
@@ -69,45 +69,47 @@
         </div>
 
         <div class="card highlight-border">
-    <div class="section-header">
-        <span style="font-size: 1.5em;">⛽</span> <span class="section-title">Emergency Gas</span>
-    </div>
-    <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 20px;">
-        Stuck with 0 JELLO? Request a manual airdrop from the Chef.
-    </p>
+            <div class="section-header">
+                <span style="font-size: 1.5em;">⛽</span> <span class="section-title">Emergency Gas</span>
+            </div>
+            <p style="font-size: 0.9em; opacity: 0.7; margin-bottom: 20px;">
+                Stuck with 0 JELLO? Request a manual airdrop from the Chef.
+            </p>
 
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(typeof submitted !== 'undefined' && submitted){showSuccess();}"></iframe>
+            <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"
+                onload="if(typeof submitted !== 'undefined' && submitted){showSuccess();}"></iframe>
 
-    <form action="https://docs.google.com/forms/d/e/1FAIpQLSeFwyxDHnBecNhT6DL4YbBdd6Kg47hsdeGRdS17VDTw3F509g/formResponse" 
-          method="POST" 
-          target="hidden_iframe" 
-          id="gasForm"
-          onsubmit="submitted=true;">
-        
-        <div class="input-group">
-            <input type="text" name="entry.817147487" id="gasRequestAddr" placeholder="Paste your 0x... wallet address" required />
+            <form
+                action="https://docs.google.com/forms/d/e/1FAIpQLSeFwyxDHnBecNhT6DL4YbBdd6Kg47hsdeGRdS17VDTw3F509g/formResponse"
+                method="POST" target="hidden_iframe" id="gasForm" onsubmit="submitted=true;">
+
+                <div class="input-group">
+                    <input type="text" name="entry.817147487" id="gasRequestAddr"
+                        placeholder="Paste your 0x... wallet address" required />
+                </div>
+
+                <button type="submit" class="btn-secondary-action"
+                    style="width: 100%; margin-top: 10px; cursor: pointer;">
+                    📩 Submit Gas Request
+                </button>
+            </form>
+
+            <div id="successMessage"
+                style="display: none; margin-top: 15px; color: var(--pulse-green); font-weight: bold; text-align: center;">
+                ✅ Request sent! The Chef will process it soon.
+            </div>
         </div>
-        
-        <button type="submit" class="btn-secondary-action" style="width: 100%; margin-top: 10px; cursor: pointer;">
-            📩 Submit Gas Request
-        </button>
-    </form>
 
-    <div id="successMessage" style="display: none; margin-top: 15px; color: var(--pulse-green); font-weight: bold; text-align: center;">
-        ✅ Request sent! The Chef will process it soon.
-    </div>
-</div>
+        <script>
+            var submitted = false;
 
-<script>
-    var submitted = false;
-
-    function showSuccess() {
-        // Hide the form and show a success message instead of a popup
-        document.getElementById('gasForm').style.display = 'none';
-        document.getElementById('successMessage').style.display = 'block';
-        updateStatus("🟢 Request Sent");
-    }
-</script>
+            function showSuccess() {
+                // Hide the form and show a success message instead of a popup
+                document.getElementById('gasForm').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+                updateStatus("🟢 Request Sent");
+            }
+        </script>
 
         <div id="status-bar"
             style="position: fixed; bottom: 20px; right: 20px; font-size: 0.8em; background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2);">

@@ -80,16 +80,48 @@
             /* mapped from accent */
         }
 
-        /* Main Mint Button - Keep specific gradient */
+        /* Main Mint Button - Enhanced Visibility */
         button.main-btn {
-            background: linear-gradient(45deg, var(--neon-magenta), #ff55aa);
+            display: block;
+            margin: 30px auto;
+            width: 100%;
+            max-width: 320px;
+            background: linear-gradient(45deg, #ff00ff, #00f3ff, #ff00ff);
+            background-size: 200% auto;
             color: white;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+            box-shadow: 0 0 25px rgba(250, 0, 255, 0.6), 0 0 50px rgba(0, 243, 255, 0.3);
+            font-size: 1.3em;
+            padding: 20px;
+            animation: pulse-glow 3s infinite, shine 3s linear infinite;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 25px rgba(250, 0, 255, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(250, 0, 255, 0.8), 0 0 60px rgba(0, 243, 255, 0.5);
+                transform: scale(1.02);
+            }
+
+            100% {
+                box-shadow: 0 0 25px rgba(250, 0, 255, 0.6);
+            }
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
         }
 
         button.main-btn:hover {
-            box-shadow: 0 0 30px rgba(255, 0, 127, 0.7);
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.05);
+            filter: brightness(1.2);
+            box-shadow: 0 0 50px rgba(250, 0, 255, 1), 0 0 80px rgba(0, 243, 255, 0.7);
         }
 
         button.main-btn:disabled {
@@ -97,6 +129,7 @@
             box-shadow: none;
             cursor: not-allowed;
             opacity: 0.5;
+            animation: none;
         }
 
         /* Status & Links */
@@ -413,11 +446,11 @@
 
         <div class="nav-links">
             <a href="index.html">Command Center</a>
-            <a href="staking.html">The Fridge</a>
+            <a href="staking.html">The Fridge (Staking)</a>
             <a href="swap.html">WiggleSwap</a>
             <a href="free-gifts.html">Free Gifts</a>
             <a href="jam.html">Buy JAM</a>
-            <a href="mint.html" class="active">Mint JELLY</a>
+            <a href="mint.html" class="active">Mint NFT</a>
             <a href="about.html">About Us</a>
         </div>
     </div>
@@ -524,11 +557,11 @@
                 <h3>Wallet Settings</h3>
 
                 <button class="btn-secondary" onclick="addJamToken()">
-                    <span>💎</span> Add JAM Token to MetaMask
+                    <span>💎</span> Register JAM in MetaMask
                 </button>
 
                 <button class="btn-secondary" onclick="addNftToWallet()">
-                    <span>🦊</span> Update NFT to metamask
+                    <span>🦊</span> Register NFT in MetaMask
                 </button>
             </div>
         </div>
@@ -677,47 +710,32 @@
 
         window.onload = init;
 
-        // Load all available (unminted) NFT IDs
+        // Load the actual next NFT ID to be minted
         async function loadAvailableNFTs() {
-            availableIds = [];
-            setStatus("🔍 Scanning for available Jello Heads...", "white");
+            setStatus("🔍 Checking contract for Next ID...", "white");
 
-            // Check IDs 1-96 for availability
-            for (let id = 1; id <= 96; id++) {
-                try {
-                    // If ownerOf reverts, the token is not minted yet
-                    await nftContract.ownerOf(id);
-                    // Token exists (has owner), skip it
-                } catch (e) {
-                    // Token doesn't exist yet, it's available
-                    availableIds.push(id);
+            try {
+                // Get the next ID directly from the contract
+                const nextId = await nftContract.nextTokenId();
+                currentRandomId = Number(nextId);
+
+                if (currentRandomId > 96) {
+                    setStatus("❌ All Jello Heads have been minted!", "#ff4d4d");
+                    document.getElementById("actionBtn").innerText = "SOLD OUT";
+                    document.getElementById("actionBtn").disabled = true;
+                    return;
                 }
+
+                // Update display
+                document.getElementById("nextIdDisplay").innerText = currentRandomId;
+                document.getElementById("nftPreview").src = IMG_BASE_URI + currentRandomId + ".png";
+
+                setStatus(`✅ Next Jello Head: #${currentRandomId}`, "#4caf50");
+
+            } catch (err) {
+                console.error("Error fetching nextTokenId:", err);
+                setStatus("Error reading contract data.", "red");
             }
-
-            if (availableIds.length === 0) {
-                setStatus("❌ All Jello Heads have been minted!", "#ff4d4d");
-                document.getElementById("actionBtn").innerText = "SOLD OUT";
-                document.getElementById("actionBtn").disabled = true;
-                return;
-            }
-
-            // Select a random one from available
-            selectRandomNFT();
-        }
-
-        // Select and display a random NFT from available IDs
-        function selectRandomNFT() {
-            if (availableIds.length === 0) return;
-
-            const randomIndex = Math.floor(Math.random() * availableIds.length);
-            currentRandomId = availableIds[randomIndex];
-
-            // Update display
-            document.getElementById("nextIdDisplay").innerText = currentRandomId;
-            document.getElementById("manualTokenId").value = currentRandomId;
-            document.getElementById("nftPreview").src = IMG_BASE_URI + currentRandomId + ".png";
-
-            setStatus(`✅ Found ${availableIds.length} available Jello Heads`, "#4caf50");
         }
 
         async function refreshData() {
@@ -725,8 +743,6 @@
                 const btn = document.getElementById("actionBtn");
                 btn.disabled = true;
                 btn.innerText = "Checking Status...";
-
-                // Note: currentRandomId is already set by loadAvailableNFTs -> selectRandomNFT
 
                 // 2. Check JAM Balance
                 const balance = await jamContract.balanceOf(userAddress);
@@ -798,21 +814,12 @@
 
                 // Automatically prompt to add to MetaMask
                 setTimeout(() => {
-                    addNftToWallet(lastMintedId);
+                    addNftToWallet(); // This scans all owned NFTs
                 }, 1000);
 
-                // Remove minted ID from available list
-                availableIds = availableIds.filter(id => id !== lastMintedId);
-
-                // Select another random NFT for next mint
-                if (availableIds.length > 0) {
-                    selectRandomNFT();
-                    await refreshData();
-                } else {
-                    setStatus("❌ All Jello Heads have been minted!", "#ff4d4d");
-                    btn.innerText = "SOLD OUT";
-                    btn.disabled = true;
-                }
+                // Load the next sequential ID
+                await loadAvailableNFTs();
+                await refreshData();
 
             } catch (err) {
                 console.error(err);
